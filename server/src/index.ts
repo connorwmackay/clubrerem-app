@@ -67,7 +67,7 @@ const authorizeClient = async function (req: Request, res: Response, next: NextF
         auth = await authRepository.findOne({bearer_token: bearerToken});
     }
 
-    if (req.originalUrl === '/users' && req.method === 'POST') {
+    if (req.originalUrl === '/api/v1/users' && req.method === 'POST') {
         next();
     } else if (!auth || auth.level === AuthLevel.GUEST) {  
         res.status(401);
