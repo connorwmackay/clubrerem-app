@@ -1,0 +1,27 @@
+version: "3"
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    command: npm start
+    volumes:
+      - ./server:/usr/src/app/server
+    ports:
+      - "4001:4001"
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/data/postgres
+    logging:
+      driver: "none"
+    ports:
+      - '5438:5432'
+    volumes:
+      - postgres:/data/postgres
+volumes:
+  server:
+  postgres:
