@@ -7,7 +7,7 @@ function hashPassword(password: string, salt?: string): string[] {
     }
 
     const data = password + salt;
-    const hash = CryptoJS.SHA256(data);
+    const hash = CryptoJS.SHA512(data);
 
     return [hash.toString(CryptoJS.enc.Hex), salt];
 }
