@@ -6,7 +6,8 @@ function hashPassword(password: string, salt?: string): string[] {
         salt = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
     }
 
-    const hash = CryptoJS.PBKDF2(password, salt);
+    const key = CryptoJS.PBKDF2(password, salt, {keySize: 64, iterations: 10000});
+    const hash = CryptoJS.HmacSHA512(password, key);
 
     return [hash.toString(CryptoJS.enc.Hex), salt];
 }
