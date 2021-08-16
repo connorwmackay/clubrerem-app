@@ -72,7 +72,7 @@ const authorizeClient = async function (req: Request, res: Response, next: NextF
     } else if (!auth || auth.level === AuthLevel.GUEST) {  
         res.status(401);
         return res.json({
-            authorization: "unauthorized"
+            isAuthorized: "unauthorized"
         });
     } else {
         next();
