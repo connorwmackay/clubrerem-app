@@ -12,9 +12,13 @@ import { createConnections, Connection, getConnection, getConnectionManager } fr
 import User from "./entity/User";
 import Auth, { AuthLevel } from "./entity/Auth";
 
+// Path
+import path from 'path';
+
 // Routes
 import v1UserRouter from "./routes/v1/user";
 import v1AuthRouter from "./routes/v1/auth";
+import v1PictureRouter from "./routes/v1/picture";
 
 const app: Application = express();
 
@@ -79,12 +83,16 @@ const authorizeClient = async function (req: Request, res: Response, next: NextF
     }
 };
 
+// Static files
+app.use('/res', express.static(path.join(__dirname, '../public')));
+
 // Version 1 of the API.
 const v1Router = express.Router();
 
 v1Router.use("/auth", v1AuthRouter);
 v1Router.use(authorizeClient);
 v1Router.use("/users", v1UserRouter);
+v1Router.use("/pictures", v1PictureRouter);
 
 app.use('/api/v1', v1Router);
 
