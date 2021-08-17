@@ -52,6 +52,7 @@ router.put("/:username", async(req: Request, res: Response): Promise<Response> =
     const username: string = req.body.username || "";
     const email: string = req.body.email_addr || "";
     const password: string = req.body.password || "";
+    const profile_picture: string = req.body.profile_picture || "";
 
     // Request Body validation
     const isValidUsername: boolean = username.length > 0 && username.length <= 255 && typeof username === "string" && !username.includes(" ");
@@ -59,6 +60,8 @@ router.put("/:username", async(req: Request, res: Response): Promise<Response> =
     const isValidPassword = password.length > 7 && password.length <= 255 && typeof password === "string";
 
     const isValid: boolean = isValidUsername && isValidEmail && isValidPassword;
+
+    // TODO: Check picture size conforms to the correct standards.
 
     let user = await userRepository.findOne({username: req.params.username});
 
@@ -75,6 +78,10 @@ router.put("/:username", async(req: Request, res: Response): Promise<Response> =
 
         if (isValidEmail) {
             user.email = email;
+        }
+
+        if (profile_picture.length > 0) {
+            user.profile_picture = profile_picture;
         }
 
         await userRepository.save(user);

@@ -12,7 +12,9 @@ export default class User {
     @Column({unique: true})
     email: string;
 
+    @Column({default: '/res/images/default_profile.png'})
+    profile_picture: string;
+
     @Column()
     password_hash: string;
-
 };
