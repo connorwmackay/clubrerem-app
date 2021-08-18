@@ -113,9 +113,9 @@ router.put('/decline', async(req: Request, res: Response): Promise<Response> => 
     });
 });
 
-router.get('/', async(req: Request, res: Response): Promise<Response> => {
+router.get('/:username', async(req: Request, res: Response): Promise<Response> => {
 
-    const username = req.body.username;
+    const username = req.params.username;
 
     const connection = getConnection('connection1');
     const userRepository = connection.getRepository(User);
@@ -126,7 +126,7 @@ router.get('/', async(req: Request, res: Response): Promise<Response> => {
     if (user) {
         let friend = await friendRespository.findOne({sender: res.locals.user, recipient: user});
 
-        if (friend) {
+        if (!friend) {
             friend = await friendRespository.findOne({sender: user, recipient: res.locals.user});
         }
 
