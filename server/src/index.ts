@@ -11,6 +11,7 @@ import { createConnections, Connection, getConnection, getConnectionManager } fr
 // Entities
 import User from "./entity/User";
 import Auth, { AuthLevel } from "./entity/Auth";
+import Friend, { FriendStatus, FriendRequestStatus} from "./entity/Friend";
 
 // Path
 import path from 'path';
@@ -19,6 +20,7 @@ import path from 'path';
 import v1UserRouter from "./routes/v1/user";
 import v1AuthRouter from "./routes/v1/auth";
 import v1PictureRouter from "./routes/v1/picture";
+import v1FriendRouter from "./routes/v1/friend";
 
 const app: Application = express();
 
@@ -66,9 +68,11 @@ const authorizeClient = async function (req: Request, res: Response, next: NextF
     const connection = getConnection("connection1");
     const authRepository = connection.getRepository(Auth);
 
-    let auth = null;
-    if (typeof bearerToken === 'string') {
-        auth = await authRepository.findOne({bearer_token: bearerToken});
+    let auth = await authRepository.findOne({select: ["id","bearer_token", "level" ], relations: ["user"], where: {bearer_token: bearerToken}});
+    debug("Auth: ", auth);
+
+    if (auth) {
+        res.locals.user = auth.user;
     }
 
     if (req.originalUrl === '/api/v1/users' && req.method === 'POST') {
@@ -93,6 +97,7 @@ v1Router.use("/auth", v1AuthRouter);
 v1Router.use(authorizeClient);
 v1Router.use("/users", v1UserRouter);
 v1Router.use("/pictures", v1PictureRouter);
+v1Router.use("/friends", v1FriendRouter);
 
 app.use('/api/v1', v1Router);
 

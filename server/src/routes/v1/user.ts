@@ -65,7 +65,7 @@ router.put("/:username", async(req: Request, res: Response): Promise<Response> =
 
     let user = await userRepository.findOne({username: req.params.username});
 
-    if (user) {
+    if ((user) && (res.locals.user.id === user.id)) {
         if (isValidPassword) {
             const hashArray = hashPassword(password);
             let hash = `${hashArray[0]}|${hashArray[1]}`;
@@ -108,9 +108,21 @@ router.get("/:username", async(req: Request, res: Response): Promise<Response> =
 
     if (user) {
         res.status(201);
+
+        if (res.locals.user.id === user.id) {
+            return res.json({
+                "isSuccess": true,
+                "user": user
+            });
+        }
+        
         return res.json({
             "isSuccess": true,
-            "user": user
+            "user": {
+                id: user.id,
+                username: user.username,
+                profilePicture: user.profile_picture,
+            }
         });
     }
 

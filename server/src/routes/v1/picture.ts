@@ -22,29 +22,55 @@ router.post('/', async(req: Request, res: Response): Promise<Response> => {
     form.parse(req, function(err, fields, files) {
         Object.keys(files).forEach(name => {
             debug(files[name]);
-            let file = files[name][0];
 
-            let inputFile = fs.readFile(file.path, (err, data) => {
-                if (err) {
-                    debug("Error:", err);
-    
-                    return res.status(500).json({
-                        isSuccess: false,
-                        image: {}
-                    });
-                }
-    
-                let outputFile = fs.writeFile(path.join(__dirname, `${imageFolder}/${imageCode}.${imageFormat}`), data, (err) => {
-                    if (err) {
-                        debug("Error:", err);
-    
+            files[name].forEach((file: multiparty.File) => {
+                let inputFile = fs.readFile(file.path, (err, data) => {
+                    // TODO: Check if file is an actual image.
+                    
+                    if (file.size >= 10485760) {
+                        debug("File size too large");
+
                         return res.status(500).json({
                             isSuccess: false,
                             image: {}
                         });
                     }
+
+                    if (file.path.toLowerCase().includes(".png")) {
+                        imageFormat = "png";
+                    } else if (file.path.toLowerCase().includes(".jpg" || file.path.toLowerCase().includes(".jpeg"))) {
+                        imageFormat = "jpg";
+                    } else {
+                        debug("Not an image.");
+
+                        return res.status(500).json({
+                            isSuccess: false,
+                            image: {}
+                        });
+                    }
+
+                    if (err) {
+                        debug("Error:", err);
+        
+                        return res.status(500).json({
+                            isSuccess: false,
+                            image: {}
+                        });
+                    }
+        
+                    let outputFile = fs.writeFile(path.join(__dirname, `${imageFolder}/${imageCode}.${imageFormat}`), data, (err) => {
+                        if (err) {
+                            debug("Error:", err);
+        
+                            return res.status(500).json({
+                                isSuccess: false,
+                                image: {}
+                            });
+                        }
+                    });
                 });
             });
+
         });
     });
 
