@@ -1,7 +1,5 @@
 import { debug } from "console";
 import {Request, Response, Router } from "express";
-
-import { hashPassword } from "../../password";
 import {getRepository, getConnection, TreeLevelColumn} from "typeorm";
 
 // Entities
@@ -10,9 +8,27 @@ import Friend, {FriendStatus, FriendRequestStatus} from '../../entity/Friend';
 
 const router: Router = Router();
 
-// TODO: Support removing friends.
+function getFriendResponse(friend: Friend): {} {
+    return {
+        id: friend.id,
+        friend_requests_status: friend.friend_request_status,
+        friend_status: friend.friend_status,
+        sender: {
+            id: friend.sender.id,
+            username: friend.sender.username,
+            profile_picture: friend.sender.profile_picture
+        },
+        recipient: {
+            id: friend.recipient.id,
+            username: friend.recipient.username,
+            profile_picture: friend.recipient.profile_picture
+        }
+    }
+}
 
-// Send a Friend Request
+//TODO: Support removing friends.
+
+// Send a Friend Request and create a new friend record.
 router.post('/', async(req: Request, res: Response): Promise<Response> => {
 
     const connection = getConnection('connection1');
@@ -35,14 +51,14 @@ router.post('/', async(req: Request, res: Response): Promise<Response> => {
             // Created new friend record
             return res.status(201).json({
                 isSuccess: true,
-                friend: friend
+                friend: getFriendResponse(friend)
             });
         }
 
         // Friend record already exists
         return res.status(201).json({
             isSuccess: false,
-            friend: friendCheck
+            friend: getFriendResponse(friendCheck)
         });
     }
 
@@ -53,15 +69,16 @@ router.post('/', async(req: Request, res: Response): Promise<Response> => {
     });
 });
 
-router.put('/accept', async(req: Request, res: Response): Promise<Response> => {
-    const senderUsername = req.body.senderUsername;
+// Accept a friend request and update the friend record.
+router.put('/:username/accept', async(req: Request, res: Response): Promise<Response> => {
+    const senderUsername = req.params.username;
     
     const connection = getConnection('connection1');
     const userRepository = connection.getRepository(User);
     const friendRespository = connection.getRepository(Friend);
 
     const sender = await userRepository.findOne({username: senderUsername});
-    let friend = await friendRespository.findOne({recipient: res.locals.user, sender: sender});
+    let friend = await friendRespository.findOne({relations: ["sender", "recipient"], where: {recipient: res.locals.user, sender: sender}});
 
     if (friend) {
         if (friend.friend_request_status === FriendRequestStatus.REQUESTED) {
@@ -72,7 +89,7 @@ router.put('/accept', async(req: Request, res: Response): Promise<Response> => {
 
             return res.status(201).json({
                 isSuccess: true,
-                friend: friend
+                friend: getFriendResponse(friend)
             });
         }
     }
@@ -83,8 +100,9 @@ router.put('/accept', async(req: Request, res: Response): Promise<Response> => {
     });
 });
 
-router.put('/decline', async(req: Request, res: Response): Promise<Response> => {
-    const senderUsername = req.body.senderUsername;
+// Decline a friend request and update the friend record.
+router.put('/:username/decline', async(req: Request, res: Response): Promise<Response> => {
+    const senderUsername = req.params.username;
     
     const connection = getConnection('connection1');
     const userRepository = connection.getRepository(User);
@@ -102,7 +120,7 @@ router.put('/decline', async(req: Request, res: Response): Promise<Response> => 
 
             return res.status(201).json({
                 isSuccess: true,
-                friend: friend
+                friend: getFriendResponse(friend)
             });
         }
     }
@@ -113,6 +131,51 @@ router.put('/decline', async(req: Request, res: Response): Promise<Response> => 
     });
 });
 
+// Get the Friend list of the authenticated user.
+router.get('/', async(req: Request, res: Response): Promise<Response> => {
+    const connection = getConnection('connection1');
+    const friendRespository = connection.getRepository(Friend);
+
+    let friends: Friend[] = [];
+    const friends_set_one = await friendRespository.find({relations: ["sender", "recipient"], where: {sender: res.locals.user}});
+    const friends_set_two = await friendRespository.find({relations: ["sender", "recipient"], where: {recipient: res.locals.user}});
+
+    debug("Friends Set #1:", friends_set_one);
+    debug("Friends Set #2:", friends_set_two);
+
+    if (friends_set_one.length > 0 && friends_set_two.length > 0) {
+        friends = friends.concat(friends_set_one, friends_set_two);
+    } else if(friends_set_one.length > 0) {
+        friends = friends.concat(friends_set_one);
+    } else if(friends_set_two.length > 0) {
+        friends = friends.concat(friends_set_two);
+    }
+
+    if (friends) {
+        debug("Friends:", friends);
+
+        for (let i=0; i < friends.length; i++) {
+            if (friends[i].friend_status !== FriendStatus.FRIENDS) {
+                friends.splice(i, 1);
+            }
+        }
+
+        let formatFriends: Array<{}> = [];
+        friends.forEach(friend => formatFriends.push(getFriendResponse(friend)));
+
+        return res.status(201).json({
+            isSuccess: true,
+            friends: formatFriends
+        });
+    }
+
+    return res.status(201).json({
+        isSuccess: false,
+        friends: []
+    });
+});
+
+// Get a Friend record of a specific user connected to the authenticated user.
 router.get('/:username', async(req: Request, res: Response): Promise<Response> => {
 
     const username = req.params.username;
@@ -124,16 +187,16 @@ router.get('/:username', async(req: Request, res: Response): Promise<Response> =
     const user = await userRepository.findOne({username: username});
 
     if (user) {
-        let friend = await friendRespository.findOne({sender: res.locals.user, recipient: user});
+        let friend = await friendRespository.findOne({relations: ["sender", "recipient"], where: {sender: res.locals.user, recipient: user}});
 
         if (!friend) {
-            friend = await friendRespository.findOne({sender: user, recipient: res.locals.user});
+            friend = await friendRespository.findOne({relations: ["sender", "recipient"], where: {sender: user, recipient: res.locals.user}});
         }
 
         if (friend) {
             return res.status(201).json({
                 isSuccess: true,
-                friend: friend
+                
             });
         }
     }

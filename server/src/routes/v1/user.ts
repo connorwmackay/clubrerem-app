@@ -10,39 +10,40 @@ router.post("/", async(req: Request, res: Response): Promise<Response> => {
     const connection = getConnection("connection1");
     const userRepository = connection.getRepository(User);
     
-    // Request Body variables
-    const username: string = req.body.username;
-    const email: string = req.body.email_addr;
-    const password: string = req.body.password;
+    if (!res.locals.user) {
+        // Request Body variables
+        const username: string = req.body.username;
+        const email: string = req.body.email_addr;
+        const password: string = req.body.password;
 
-    // Request Body validation
-    const isValidUsername: boolean = username.length > 0 && username.length <= 255 && typeof username === "string" && !username.includes(" ");
-    const isValidEmail: boolean = email.length > 0 && email.length <= 255 && typeof email === "string" && email.includes("@");
-    const isValidPassword = password.length > 7 && password.length <= 255 && typeof password === "string";
+        // Request Body validation
+        const isValidUsername: boolean = username.length > 0 && username.length <= 255 && typeof username === "string" && !username.includes(" ");
+        const isValidEmail: boolean = email.length > 0 && email.length <= 255 && typeof email === "string" && email.includes("@");
+        const isValidPassword = password.length > 7 && password.length <= 255 && typeof password === "string";
 
-    const isValid: boolean = isValidUsername && isValidEmail && isValidPassword;
+        const isValid: boolean = isValidUsername && isValidEmail && isValidPassword;
 
-    if (isValid) {
-        const hashArray = hashPassword(password);
-        let hash = `${hashArray[0]}|${hashArray[1]}`;
-        let user = new User();
-        user.username = username;
-        user.email = email;
-        user.password_hash = hash;
-        await userRepository.save(user);
+        if (isValid) {
+            const hashArray = hashPassword(password);
+            let hash = `${hashArray[0]}|${hashArray[1]}`;
+            let user = new User();
+            user.username = username;
+            user.email = email;
+            user.password_hash = hash;
+            await userRepository.save(user);
+            res.status(201);
+            return res.json({
+                isSuccess: false,
+                user: user
+            });
+        }
     }
 
-    // Response JSON object
-    const response: object = {
-        isSuccess: isValid,
-        user: {
-            username,
-            email,
-        }
-    };
-
     res.status(201);
-    return res.json(response);
+    return res.json({
+        isSuccess: false,
+        user: {}
+    });
 });
 
 router.put("/:username", async(req: Request, res: Response): Promise<Response> => {
