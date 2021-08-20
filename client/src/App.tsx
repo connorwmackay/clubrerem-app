@@ -9,8 +9,11 @@ import {
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { fetchAuthenticatedUser, selectAuthenticatedUser, unauthenticate, UserLoginData } from './features/authenticatedUser';
 
+import './styles/App.css'
+
 import Home from './pages/home';
 import Login from './pages/login';
+import Cookies from "js-cookie";
 
 function App() {
 
@@ -22,15 +25,17 @@ function App() {
     }
 
     const userElement = () => {
-        if (!authenticatedUser.is_authenticated) {
-            let userData: UserLoginData = {
-                username: '',
-                password: '',
-                save_password: false
-            }
+        let userData: UserLoginData = {
+            username: '',
+            password: '',
+            save_password: false
+        }
 
+        if (Cookies.get('bearer_token') !== undefined && Cookies.get('username') !== 'undefined' && !authenticatedUser.is_authenticated) {
             dispatch(fetchAuthenticatedUser(userData));
+        }
 
+        if (!authenticatedUser.is_authenticated) {
             return (
                 <li>
                      <Link to ="/login">Login</Link>
@@ -60,8 +65,6 @@ function App() {
                         {userElement()}
                     </ul>
                 </nav>
-
-                <hr />
 
                 <Switch>
                     <Route exact path="/">

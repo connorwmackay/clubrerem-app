@@ -1,0 +1,39 @@
+nav {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: #4ecf7b;
+}
+
+ul {
+    color: white;
+    width: 100%;
+    list-style-type: none;
+    float: left;
+    background-color: #4ecf7b;
+}
+
+ul a {
+    font-size: 18px;
+    color: white;
+}
+
+li {
+    margin-right: 2rem;
+    font-size: 18px;
+    display: inline-block;
+}
+
+nav button {
+    font-size: 18px;
+    color: white;
+    background-color: transparent;
+    border: none;
+}
+
+nav button:hover {
+    color: gray;
+    background-color: transparent;
+    border: none;
+}

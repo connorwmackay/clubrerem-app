@@ -56,7 +56,7 @@ const Login = () => {
                 <button type="submit">Login</button>
             </form>
 
-            {authenticatedUser.username}
+            {authenticatedUser.status}
         </div>
     )
 }

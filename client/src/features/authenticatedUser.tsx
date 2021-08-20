@@ -47,7 +47,7 @@ export const fetchAuthenticatedUser = createAsyncThunk(
                 console.error(err);
                 return rejectWithValue({});
             }
-        } else if (payload.username.length > 0) {
+        } else  {
             try {
                 return fetch('http://localhost:4001/api/v1/auth', {
                     method: 'POST',
@@ -95,7 +95,7 @@ export const authenticatedUserSlice = createSlice({
         [fetchAuthenticatedUser.pending.type]: (state, action) => {
             console.log("Pending: ", state);
 
-            state.status = 'loading';
+            state.status = 'Logging in...';
             state.is_authenticated = false;
             state.id = -1;
             state.username = '';
@@ -106,7 +106,7 @@ export const authenticatedUserSlice = createSlice({
             console.log(action);
 
             if (action.payload.isSuccess === true) {
-                state.status = 'idle';
+                state.status = 'Logged in';
 
                 if (action.payload.auth) {
                     state.is_authenticated = action.payload.isSuccess;
@@ -125,7 +125,7 @@ export const authenticatedUserSlice = createSlice({
         },
         [fetchAuthenticatedUser.rejected.type]: (state, action) => {
             console.log("Rejected: ", state);
-            state.status = 'idle';
+            state.status = 'Incorrect login details';
             state.is_authenticated = false;
             state.id = -1;
             state.username = '';
