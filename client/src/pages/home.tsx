@@ -2,6 +2,8 @@ import React from 'react'
 import { useSelector } from 'react-redux';
 import { selectAuthenticatedUser } from '../features/authenticatedUser';
 
+import '../styles/Home.css'
+
 const Home = () => {
     const authenticatedUser = useSelector(selectAuthenticatedUser);
 

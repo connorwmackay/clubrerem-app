@@ -37,19 +37,26 @@ function App() {
 
         if (!authenticatedUser.is_authenticated) {
             return (
-                <li>
-                     <Link to ="/login">Login</Link>
-                </li>
+                <>
+                    <li className="navbar-item-right">
+                        <Link to ="/signup" className="navbar-link">Signup</Link>
+                    </li>
+                    <li className="navbar-item-right">
+                        <Link to ="/login" className="navbar-link">Login</Link>
+                    </li>
+                </>
             );
         } else {
+            // List is rendered back to front due to float: right; style.
             return (
                 <>
-                    <li>
-                        <button>{authenticatedUser.username}</button>
+                    <li className="navbar-item-right">
+                        <button className="navbar-button" onClick={logout}>Logout</button>
                     </li>
-                    <li>
-                        <button onClick={logout}>Logout</button>
+                    <li className="navbar-item-right">
+                        <button className="navbar-button">{authenticatedUser.username}</button>
                     </li>
+                   
                 </>
             );
         }
@@ -57,10 +64,10 @@ function App() {
 
     return (
         <Router>
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
+                <nav className="navbar">
+                    <ul className="navbar-nav">
+                        <li className="navbar-item">
+                            <Link to="/" className="navbar-link">Home</Link>
                         </li>
                         {userElement()}
                     </ul>

@@ -3,6 +3,8 @@ import { selectAuthenticatedUser, UserLoginData, fetchAuthenticatedUser } from '
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import '../styles/Login.css'
+
 const Login = () => {
     const authenticatedUser = useSelector(selectAuthenticatedUser);
     const dispatch = useDispatch();
@@ -43,20 +45,22 @@ const Login = () => {
     return (
         <div>
             <h1>Login</h1>
-            <form method="GET" autoComplete="off" onSubmit={submitLogin}>
+            <form method="GET" autoComplete="off" onSubmit={submitLogin} id="loginForm">
                 <label htmlFor="username">Username</label>
                 <input type="text" id="username" name="username" onChange={handleUsername} required/>
 
                 <label htmlFor="password">Password</label>
                 <input type="password" id="password" name="password" onChange={handlePassword} required/>
+                <div id="savePasswordSection">
+                    <label htmlFor="savePassword">Save Password</label>
+                    <input type="checkbox" id="savePassword" name="savePassword" checked={savePassword} onChange={handleSavePassword} />
+                </div>
 
-                <label htmlFor="savePassword">Save Password</label>
-                <input type="checkbox" id="savePassword" name="savePassword" checked={savePassword} onChange={handleSavePassword} />
-
-                <button type="submit">Login</button>
+                <button type="submit" id="loginButton">Login</button>
+                {authenticatedUser.status}
             </form>
 
-            {authenticatedUser.status}
+            
         </div>
     )
 }

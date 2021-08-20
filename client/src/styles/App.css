@@ -1,40 +1,49 @@
-nav {
+.navbar {
     display: flex;
     margin: 0;
     padding: 0;
     width: 100%;
+    padding-top: 1rem;
     background-color: #4ecf7b;
     border-bottom: 0.2rem solid #3b965b;
 }
 
-ul {
+.navbar-nav {
     color: white;
     width: 100%;
     list-style-type: none;
     float: left;
     background-color: #4ecf7b;
-    
+    margin: 0;
+    height: 2.5rem;
+    padding: 0;
 }
 
-ul a {
+.navbar-link {
     font-size: 18px;
     color: white;
 }
 
-li {
-    margin-right: 2rem;
+.navbar-item {
+    margin-left: 2rem;
     font-size: 18px;
-    display: inline-block;
+    float: left;
 }
 
-nav button {
+.navbar-item-right {
+    margin-right: 2rem;
+    font-size: 18px;
+    float: right;
+}
+
+.navbar-button {
     font-size: 18px;
     color: white;
     background-color: transparent;
     border: none;
 }
 
-nav button:hover {
+.navbar-button:hover {
     color: gray;
     background-color: transparent;
     border: none;
