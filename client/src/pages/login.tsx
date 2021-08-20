@@ -3,6 +3,8 @@ import { selectAuthenticatedUser, UserLoginData, fetchAuthenticatedUser } from '
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import {Redirect} from "react-router-dom";
+
 import '../styles/Login.css'
 
 const Login = () => {
@@ -42,6 +44,19 @@ const Login = () => {
         event.preventDefault();
     }
 
+    const loginRedirect = () => {
+        if (authenticatedUser.is_authenticated) {
+            return (
+                <Redirect to="/" />
+            )
+        } else {
+            return (
+                <>
+                </>
+            )
+        }
+    }
+
     return (
         <div>
             <h1>Login</h1>
@@ -58,6 +73,7 @@ const Login = () => {
 
                 <button type="submit" id="loginButton">Login</button>
                 {authenticatedUser.status}
+                {loginRedirect()}
             </form>
 
             
