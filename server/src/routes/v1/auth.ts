@@ -8,7 +8,7 @@ import Auth, { AuthLevel } from "../../entity/Auth";
 import {getRepository, getConnection} from "typeorm";
 import CryptoJS from "crypto-js";
 
-router.get("/", async(req: Request, res: Response): Promise<Response> => {
+router.post("/", async(req: Request, res: Response): Promise<Response> => {
     const connection = getConnection("connection1");
     const userRepository = connection.getRepository(User);
     const authRepository = connection.getRepository(Auth);

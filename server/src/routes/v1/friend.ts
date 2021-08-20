@@ -140,9 +140,6 @@ router.get('/', async(req: Request, res: Response): Promise<Response> => {
     const friends_set_one = await friendRespository.find({relations: ["sender", "recipient"], where: {sender: res.locals.user}});
     const friends_set_two = await friendRespository.find({relations: ["sender", "recipient"], where: {recipient: res.locals.user}});
 
-    debug("Friends Set #1:", friends_set_one);
-    debug("Friends Set #2:", friends_set_two);
-
     if (friends_set_one.length > 0 && friends_set_two.length > 0) {
         friends = friends.concat(friends_set_one, friends_set_two);
     } else if(friends_set_one.length > 0) {
@@ -152,7 +149,6 @@ router.get('/', async(req: Request, res: Response): Promise<Response> => {
     }
 
     if (friends) {
-        debug("Friends:", friends);
 
         for (let i=0; i < friends.length; i++) {
             if (friends[i].friend_status !== FriendStatus.FRIENDS) {

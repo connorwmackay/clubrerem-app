@@ -7,8 +7,21 @@ services:
     command: npm start
     volumes:
       - ./server:/usr/src/app/server
+    depends_on:
+      - postgres
     ports:
       - "4001:4001"
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    command: npm start
+    volumes:
+      - ./client:/usr/src/app/client
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
   postgres:
     image: postgres
     restart: always
@@ -28,6 +41,8 @@ services:
     restart: always
     logging:
         driver: "none"
+    depends_on: 
+      - postgres
     environment:
         PGADMIN_DEFAULT_EMAIL: admin@admin.com
         PGADMIN_DEFAULT_PASSWORD: root
