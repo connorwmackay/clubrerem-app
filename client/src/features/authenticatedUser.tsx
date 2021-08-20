@@ -59,8 +59,6 @@ export const fetchAuthenticatedUser = createAsyncThunk(
                 }).then(response => response.json())
                 .then(data => {
                     if (payload.save_password) {
-                        console.log("Payload:",payload);
-
                         Cookies.set('bearer_token', data.auth.bearer_token, {expires: 7});
                         Cookies.set('username', payload.username, {expires: 7});
                     }

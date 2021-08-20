@@ -45,7 +45,7 @@ function App() {
             return (
                 <>
                     <li>
-                        <Link to="/">{authenticatedUser.username}</Link>
+                        <button>{authenticatedUser.username}</button>
                     </li>
                     <li>
                         <button onClick={logout}>Logout</button>
