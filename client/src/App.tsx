@@ -1,6 +1,7 @@
 import React from "react";
 import {
   BrowserRouter as Router,
+  Redirect,
   Switch,
   Route,
   Link
@@ -49,6 +50,9 @@ function App() {
                             </Link>
                         </li>
                         <li className="accountMenuItem">
+                            <hr />
+                        </li>
+                        <li className="accountMenuItem">
                             <button onClick={logout} className="accountMenuButton">Logout</button>
                         </li>
                     </ul>
@@ -73,6 +77,7 @@ function App() {
         }
 
         if (!authenticatedUser.is_authenticated) {
+
             return (
                 <>
                     <li className="navbar-item-right">
@@ -87,7 +92,10 @@ function App() {
             return (
                 <>
                     <li className="navbar-item-right">
-                        <button className="navbar-button" onClick={toggleMenu}>{authenticatedUser.username}</button>
+                        
+                        <button className="navbar-button" onClick={toggleMenu}>
+                            <img src={`http://localhost:4001${authenticatedUser.profile_picture_url}`} alt="" width="30" height="30"/> {authenticatedUser.username}
+                            </button>
                     </li>
                     {accountMenu(navbar.isAccountMenuOpen)}
                 </>
@@ -100,7 +108,7 @@ function App() {
                 <nav className="navbar">
                     <ul className="navbar-nav">
                         <li className="navbar-item">
-                            <Link to="/" className="navbar-link">Home</Link>
+                            <Link to="/" className="navbar-link">Club ReRem</Link>
                         </li>
                         {userElement()}
                     </ul>

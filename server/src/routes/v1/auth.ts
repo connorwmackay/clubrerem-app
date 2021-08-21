@@ -47,6 +47,8 @@ router.post("/", async(req: Request, res: Response): Promise<Response> => {
                             user: {
                                 id: auth.user.id,
                                 username: auth.user.username,
+                                profile_picture: auth.user.profile_picture,
+                                email: auth.user.email
                             }
                         }
                     });

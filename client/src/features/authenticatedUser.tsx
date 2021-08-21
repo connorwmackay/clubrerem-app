@@ -82,7 +82,7 @@ export const authenticatedUserSlice = createSlice({
             state.is_authenticated = false;
             state.id = -1;
             state.username = '';
-            state.profile_picture_url = '';
+            state.profile_picture_url = '/res/images/default_profile.png';
             state.bearer_token = '';
 
             Cookies.remove('bearer_token');
@@ -97,7 +97,7 @@ export const authenticatedUserSlice = createSlice({
             state.is_authenticated = false;
             state.id = -1;
             state.username = '';
-            state.profile_picture_url = '';
+            state.profile_picture_url = '/res/images/default_profile.png';
             state.bearer_token = '';
         },
         [fetchAuthenticatedUser.fulfilled.type]: (state, action) => {
@@ -110,13 +110,13 @@ export const authenticatedUserSlice = createSlice({
                     state.is_authenticated = action.payload.isSuccess;
                     state.id = action.payload.auth.user.id;
                     state.username = action.payload.auth.user.username;
-                    state.profile_picture_url = '';
+                    state.profile_picture_url = action.payload.auth.user.profile_picture;
                     state.bearer_token = action.payload.auth.bearer_token;
                 } else {
                     state.is_authenticated = action.payload.isSuccess;
                     state.id = action.payload.user.id;
                     state.username = action.payload.user.username;
-                    state.profile_picture_url = '';
+                    state.profile_picture_url = '/res/images/default_profile.png';
                     state.bearer_token = Cookies.get('bearer_token') || '';
                 }
             }
