@@ -48,3 +48,44 @@
     background-color: transparent;
     border: none;
 }
+
+.accountMenu {
+    position: absolute;
+    z-index: 10;
+    top: 3.5rem;
+    right: 1rem;
+    float: right;
+    width: 10rem;
+    background-color: #4ecf7b;
+    border: 0.2rem solid #3b965b;
+    border-top: none;
+}
+
+.accountMenuList {
+    width: 100%;
+    list-style-type: none;
+}
+
+.accountMenuItem {
+    width: 100%;
+    margin: auto;
+    margin-bottom: 1rem;
+}
+
+.accountMenuItemLink {
+    color: white;
+    font-size: 18px;
+}
+
+.accountMenuButton {
+    font-size: 18px;
+    color: white;
+    background-color: transparent;
+    border: none;
+}
+
+.accountMenuButton:hover {
+    color: gray;
+    background-color: transparent;
+    border: none;
+}

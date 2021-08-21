@@ -9,19 +9,56 @@ import {
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { fetchAuthenticatedUser, selectAuthenticatedUser, unauthenticate, UserLoginData } from './features/authenticatedUser';
 
+import Cookies from "js-cookie";
+
+import { toggleAccountMenu, selectNavbar, NavbarState } from "./features/navbar";
+
 import './styles/App.css'
 
 import Home from './pages/home';
 import Login from './pages/login';
-import Cookies from "js-cookie";
+
 
 function App() {
 
     const authenticatedUser = useSelector(selectAuthenticatedUser);
+    const navbar = useSelector(selectNavbar);
     const dispatch = useDispatch();
 
     const logout = () => {
         dispatch(unauthenticate());
+    }
+
+    const toggleMenu = () => {
+        dispatch(toggleAccountMenu());
+    }
+
+    const accountMenu = (isOpen: boolean) => {
+        if (isOpen) {
+            return (
+                <div className="accountMenu">
+                    <ul className="accountMenuList">
+                        <li className="accountMenuItem">
+                            <Link to="/profile">
+                                <button className="accountMenuButton" onClick={toggleMenu}>Profile</button>
+                            </Link>
+                        </li>
+                        <li className="accountMenuItem">
+                            <Link to="/settings">
+                                <button className="accountMenuButton" onClick={toggleMenu}>Settings</button>
+                            </Link>
+                        </li>
+                        <li className="accountMenuItem">
+                            <button onClick={logout} className="accountMenuButton">Logout</button>
+                        </li>
+                    </ul>
+                </div>
+            );
+        } else {
+            return (
+                <></>
+            );
+        }
     }
 
     const userElement = () => {
@@ -47,16 +84,12 @@ function App() {
                 </>
             );
         } else {
-            // List is rendered back to front due to float: right; style.
             return (
                 <>
                     <li className="navbar-item-right">
-                        <button className="navbar-button" onClick={logout}>Logout</button>
+                        <button className="navbar-button" onClick={toggleMenu}>{authenticatedUser.username}</button>
                     </li>
-                    <li className="navbar-item-right">
-                        <button className="navbar-button">{authenticatedUser.username}</button>
-                    </li>
-                   
+                    {accountMenu(navbar.isAccountMenuOpen)}
                 </>
             );
         }
@@ -87,7 +120,8 @@ function App() {
 
 const mapDispatchToProps = {
     fetchAuthenticatedUser,
-    unauthenticate
+    unauthenticate,
+    toggleAccountMenu
 }
 
 export default connect(null, mapDispatchToProps)(App)

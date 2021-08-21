@@ -2,10 +2,12 @@ import { configureStore } from '@reduxjs/toolkit'
 // ...
 
 import authenticatedUser from './authenticatedUser'
+import navbar from './navbar'
 
 export const store = configureStore({
   reducer: {
-    authenticatedUser: authenticatedUser
+    authenticatedUser: authenticatedUser,
+    navbar: navbar
   },
 })
 
