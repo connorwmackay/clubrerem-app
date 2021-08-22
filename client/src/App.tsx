@@ -103,6 +103,13 @@ function App() {
         }
     }
 
+    const submitSearch = (e: React.FormEvent) => {
+        // TODO: Implement search functionality on search bar
+        // Commented out so that input resets, this should be done via state updating
+        // in the future.
+        //e.preventDefault();
+    };
+    
     return (
         <Router>
                 <nav className="navbar">
@@ -110,6 +117,12 @@ function App() {
                         <li className="navbar-item">
                             <Link to="/" className="navbar-link">Club ReRem</Link>
                         </li>
+                        <li>
+                            <form className="searchBarForm" autoComplete="off" onSubmit={submitSearch}>
+                                <input type="text" placeholder="Search..." className="searchBarInput"/>
+                            </form>
+                        </li>
+
                         {userElement()}
                     </ul>
                 </nav>

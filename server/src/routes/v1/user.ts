@@ -66,33 +66,34 @@ router.put("/:username", async(req: Request, res: Response): Promise<Response> =
 
     let user = await userRepository.findOne({username: req.params.username});
 
-    if ((user) && (res.locals.user.id === user.id)) {
-        if (isValidPassword) {
-            const hashArray = hashPassword(password);
-            let hash = `${hashArray[0]}|${hashArray[1]}`;
-            user.password_hash = hash;
+    if (res.locals.user !== undefined) {
+        if ((user) && (res.locals.user.id === user.id)) {
+            if (isValidPassword) {
+                const hashArray = hashPassword(password);
+                let hash = `${hashArray[0]}|${hashArray[1]}`;
+                user.password_hash = hash;
+            }
+
+            if (isValidUsername) {
+                user.username = username;
+            }
+
+            if (isValidEmail) {
+                user.email = email;
+            }
+
+            if (profile_picture.length > 0) {
+                user.profile_picture = profile_picture;
+            }
+
+            await userRepository.save(user);
+
+            return res.status(201).json({
+                isSuccess: true,
+                user: user
+            });
         }
-
-        if (isValidUsername) {
-            user.username = username;
-        }
-
-        if (isValidEmail) {
-            user.email = email;
-        }
-
-        if (profile_picture.length > 0) {
-            user.profile_picture = profile_picture;
-        }
-
-        await userRepository.save(user);
-
-        return res.status(201).json({
-            isSuccess: true,
-            user: user
-        });
     }
-        
 
     return res.status(201).json({
         isSuccess: true,
@@ -110,11 +111,13 @@ router.get("/:username", async(req: Request, res: Response): Promise<Response> =
     if (user) {
         res.status(201);
 
-        if (res.locals.user.id === user.id) {
-            return res.json({
-                "isSuccess": true,
-                "user": user
-            });
+        if (res.locals.user !== undefined) {
+            if (res.locals.user.id === user.id) {
+                return res.json({
+                    "isSuccess": true,
+                    "user": user
+                });
+            }
         }
         
         return res.json({

@@ -75,9 +75,7 @@ const authorizeClient = async function (req: Request, res: Response, next: NextF
         res.locals.user = auth.user;
     }
 
-    if (req.originalUrl === '/api/v1/users' && req.method === 'POST') {
-        next();
-    } else if (!auth || auth.level === AuthLevel.GUEST) {  
+    if (!auth || auth.level === AuthLevel.GUEST) {  
         res.status(401);
         return res.json({
             isAuthorized: "unauthorized"
@@ -93,9 +91,9 @@ app.use('/res', express.static(path.join(__dirname, '../public')));
 // Version 1 of the API.
 const v1Router = express.Router();
 
+v1Router.use("/users", v1UserRouter);
 v1Router.use("/auth", v1AuthRouter);
 v1Router.use(authorizeClient);
-v1Router.use("/users", v1UserRouter);
 v1Router.use("/pictures", v1PictureRouter);
 v1Router.use("/friends", v1FriendRouter);
 
