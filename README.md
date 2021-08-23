@@ -33,4 +33,9 @@ Run: *docker-compose up*
 There currently isn't any documentation, however I plan on making some, especially for the REST API so that it's easier to understand the different routes and what they do.
 
 ## Contributions
-This project was made as a solo project, but if you wanna add to the project (or fork it, *it's open-source after all*), send an issue or pull request and I'll take a look.
+This is just a side project, however feel free to contribute.
+
+To contribute to this project, first fork the repo. Next you should create a new branch that includes a very short description of what the contribution will do and also should include the date as of branch creation at the end of the branch name. This could be something like *profileFix23082021*. Once you've finished your contributions, having commited all the changes to the branch you should send a pull request to the original repo with the changes.
+
+### Pull Request
+The pull request should have a descriptive name (*though doesn't need be as long as Java class names lol*). The pull request should ideally be related to an issue, though it doens't have to be. Your comment should explain what the pull request does, but doesn't need to be an essay as your code will be reviewed too.
