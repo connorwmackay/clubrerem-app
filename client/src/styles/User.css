@@ -1,0 +1,21 @@
+.profile {
+    width: 250px;
+    margin: auto;
+}
+
+.profile_picture {
+    display: block;
+    width: 100%;
+    margin: auto;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+}
+
+.username {
+    width: 100%;
+    margin: auto;
+    display: block;
+    color: gray;
+    font-size: 24px;
+}
+

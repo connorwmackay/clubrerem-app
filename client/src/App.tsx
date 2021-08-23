@@ -18,7 +18,9 @@ import './styles/App.css'
 
 import Home from './pages/home';
 import Login from './pages/login';
+import User from './pages/user';
 
+// TODO: Create a separate navbar component and call <Navbar /> in App().
 
 function App() {
 
@@ -40,7 +42,7 @@ function App() {
                 <div className="accountMenu">
                     <ul className="accountMenuList">
                         <li className="accountMenuItem">
-                            <Link to="/profile">
+                            <Link to={`/user/${authenticatedUser.username}`}>
                                 <button className="accountMenuButton" onClick={toggleMenu}>Profile</button>
                             </Link>
                         </li>
@@ -133,6 +135,9 @@ function App() {
                     </Route>
                     <Route path="/login">
                         <Login />
+                    </Route>
+                    <Route path="/user/:username">
+                        <User />
                     </Route>
                 </Switch>
         </Router>

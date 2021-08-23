@@ -2,11 +2,13 @@ import { configureStore } from '@reduxjs/toolkit'
 // ...
 
 import authenticatedUser from './authenticatedUser'
+import findUser from './findUser'
 import navbar from './navbar'
 
 export const store = configureStore({
   reducer: {
     authenticatedUser: authenticatedUser,
+    findUser: findUser,
     navbar: navbar
   },
 })

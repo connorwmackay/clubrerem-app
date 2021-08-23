@@ -1,5 +1,6 @@
 * {
-  box-sizing: border-box; 
+  box-sizing: border-box;
+  color: gray;
 }
 
 body {
@@ -17,10 +18,10 @@ code {
 }
 
 a {
-  color: black;
+  color: gray;
   text-decoration: none;    
 }
 
 a:hover {
-  color: gray;
+  color: darkgrey;
 }

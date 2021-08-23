@@ -6,10 +6,29 @@ import { hashPassword } from "../../password";
 import User from '../../entity/User';
 import {getRepository, getConnection} from "typeorm";
 
+
+interface FullUser {
+    id: number;
+    username: string;
+    email: string;
+    profile_picture: string;
+    password_hash: string;
+}
+
+interface SafeUser {
+    id: number;
+    username: string;
+    profile_picture: string;
+}
+interface UserResponse {
+    isSuccess: boolean;
+    user: FullUser | SafeUser | {};
+}
+
 router.post("/", async(req: Request, res: Response): Promise<Response> => {
     const connection = getConnection("connection1");
     const userRepository = connection.getRepository(User);
-    
+
     if (!res.locals.user) {
         // Request Body variables
         const username: string = req.body.username;
@@ -32,18 +51,32 @@ router.post("/", async(req: Request, res: Response): Promise<Response> => {
             user.password_hash = hash;
             await userRepository.save(user);
             res.status(201);
-            return res.json({
-                isSuccess: false,
-                user: user
-            });
+
+            let fullUser: FullUser = {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                profile_picture: user.profile_picture,
+                password_hash: user.password_hash
+            }
+
+            const response: UserResponse = {
+                isSuccess: true,
+                user: fullUser
+            }      
+
+            return res.json(response);
         }
     }
 
     res.status(201);
-    return res.json({
-        isSuccess: false,
+
+    let response: UserResponse = {
+        isSuccess: true,
         user: {}
-    });
+    }
+
+    return res.json(response);
 });
 
 router.put("/:username", async(req: Request, res: Response): Promise<Response> => {
