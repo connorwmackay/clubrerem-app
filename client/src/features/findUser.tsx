@@ -9,12 +9,14 @@ interface User {
 interface FindUserState {
     isUserFound: boolean;
     targetUsername: string;
+    status: string;
     user: User;
 }
 
 const initialState: FindUserState = {
     isUserFound: false,
     targetUsername: '',
+    status: 'Loading...',
     user: {
         id: -1,
         username: '',
@@ -59,7 +61,10 @@ export const findUserSlice = createSlice({
                     profile_picture: 'http://localhost:4001' + action.payload.user.profilePicture
                 }
 
+                state.status = "";
                 state.user = tmpUser;
+            } else {
+                state.status = "Could not find user.";
             }
         }
     }

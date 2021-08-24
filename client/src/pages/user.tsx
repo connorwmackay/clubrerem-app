@@ -40,7 +40,7 @@ const User = () => {
     } else {
         return (
             <div className="profile">
-                <h1 className="username">Could not Find User</h1>
+                <h1 className="username">{findUser.status}</h1>
             </div>
         );
     }

@@ -13,7 +13,8 @@ interface AuthenticatedUserState {
 export interface UserLoginData {
     username: string,
     password: string,
-    save_password: boolean
+    save_password: boolean,
+    is_signup: boolean
 }
 
 const initialState: AuthenticatedUserState = {
@@ -28,47 +29,48 @@ const initialState: AuthenticatedUserState = {
 export const fetchAuthenticatedUser = createAsyncThunk(
     'authenticatedUser/requestStatus',
     async(payload: UserLoginData, {dispatch, rejectWithValue}) => {
+
+        if (payload === undefined) {
+            return rejectWithValue({});
+        }
+
         let username = Cookies.get('username');
         let bearer_token = Cookies.get('bearer_token');
 
-        if (bearer_token !== undefined && username !== 'undefined') {
-            try {
-                return fetch(`http://localhost:4001/api/v1/users/${username}`, {
-                    method: 'GET',
-                    mode: 'cors',
-                    headers: {
-                        'Authorization': bearer_token || ''
-                    }
-                }).then(response => response.json())
-                .then(data => {
-                    return data;
-                });
-            } catch(err) {
-                console.error(err);
-                return rejectWithValue({});
-            }
-        } else  {
-            try {
-                return fetch('http://localhost:4001/api/v1/auth', {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                }).then(response => response.json())
-                .then(data => {
-                    if (payload.save_password) {
-                        Cookies.set('bearer_token', data.auth.bearer_token, {expires: 7});
-                        Cookies.set('username', payload.username, {expires: 7});
-                    }
+        if ((payload.is_signup)) {
+            return fetch('http://localhost:4001/api/v1/auth', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }).then(response => response.json())
+            .then(data => {
+                if (payload.save_password) {
+                    Cookies.set('bearer_token', data.auth.bearer_token, {expires: 7});
+                    Cookies.set('username', payload.username, {expires: 7});
+                }
 
-                    return data;
-                });
-            } catch(err) {
+                return data;
+            }).catch(err => {
                 console.error(err);
                 return rejectWithValue({});
-            }
+            });
+        } else  {
+            return fetch(`http://localhost:4001/api/v1/users/${username}`, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Authorization': bearer_token || ''
+                }
+            }).then(response => response.json())
+            .then(data => {
+                return data;
+            }).catch(err => {
+                console.error(err);
+                return rejectWithValue({});
+            });
         }
     }
 )
@@ -91,44 +93,36 @@ export const authenticatedUserSlice = createSlice({
     },
     extraReducers: {
         [fetchAuthenticatedUser.pending.type]: (state, action) => {
-            console.log("Pending: ", state);
-
-            state.status = 'Logging in...';
-            state.is_authenticated = false;
-            state.id = -1;
-            state.username = '';
-            state.profile_picture_url = '/res/images/default_profile.png';
-            state.bearer_token = '';
+            console.log("Pending:", action);
+            state.status = "Logging in...";
         },
         [fetchAuthenticatedUser.fulfilled.type]: (state, action) => {
-            console.log(action);
+            console.log("Fulfilled:", action);
 
             if (action.payload.isSuccess === true) {
-                state.status = 'Logged in';
-
                 if (action.payload.auth) {
+                    state.status = 'Logged in...';
                     state.is_authenticated = action.payload.isSuccess;
                     state.id = action.payload.auth.user.id;
                     state.username = action.payload.auth.user.username;
                     state.profile_picture_url = action.payload.auth.user.profile_picture;
                     state.bearer_token = action.payload.auth.bearer_token;
-                } else {
+                } else if (action.payload.user) {
+                    state.status = 'Logged in...';
                     state.is_authenticated = action.payload.isSuccess;
                     state.id = action.payload.user.id;
                     state.username = action.payload.user.username;
-                    state.profile_picture_url = '/res/images/default_profile.png';
-                    state.bearer_token = Cookies.get('bearer_token') || '';
+                    state.profile_picture_url = action.payload.user.profilePicture;
+                } else {
+                    state.status = 'Incorrect login details';
                 }
             }
         },
         [fetchAuthenticatedUser.rejected.type]: (state, action) => {
-            console.log("Rejected: ", state);
+            console.log("Rejected:", action);
+
             state.status = 'Incorrect login details';
             state.is_authenticated = false;
-            state.id = -1;
-            state.username = '';
-            state.profile_picture_url = '';
-            state.bearer_token = '';
         },
     }
 })

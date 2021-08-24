@@ -36,7 +36,8 @@ const Login = () => {
         const loginData: UserLoginData = {
             username: username,
             password: password,
-            save_password: savePassword
+            save_password: savePassword,
+            is_signup: true
         };
         
         dispatch(fetchAuthenticatedUser(loginData));
