@@ -74,15 +74,8 @@ const authorizeClient = async function (req: Request, res: Response, next: NextF
     if (auth) {
         res.locals.user = auth.user;
     }
-
-    if (!auth || auth.level === AuthLevel.GUEST) {  
-        res.status(401);
-        return res.json({
-            isAuthorized: "unauthorized"
-        });
-    } else {
-        next();
-    }
+    
+    next();
 };
 
 // Static files

@@ -20,6 +20,13 @@ router.post('/', async(req: Request, res: Response): Promise<Response> => {
     let imageFolder = "../../../public/images";
     
     form.parse(req, function(err, fields, files) {
+        if (!res.locals.user) {
+            return res.status(201).json({
+                isSuccess: false,
+                image: {}
+            });
+        }
+
         Object.keys(files).forEach(name => {
             debug(files[name]);
 

@@ -20,6 +20,7 @@ import Home from './pages/home';
 import Login from './pages/login';
 import User from './pages/user';
 import Navbar from './components/navbar';
+import Settings from './pages/settings';
 
 // TODO: Create a separate navbar component and call <Navbar /> in App().
 
@@ -38,6 +39,9 @@ function App() {
                 </Route>
                 <Route path="/user/:username">
                     <User />
+                </Route>
+                <Route path="/settings">
+                    <Settings />
                 </Route>
             </Switch>
         </Router>

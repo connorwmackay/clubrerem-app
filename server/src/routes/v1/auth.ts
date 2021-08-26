@@ -63,32 +63,4 @@ router.post("/", async(req: Request, res: Response): Promise<Response> => {
     });
 })
 
-router.get("/guest", async(req: Request, res: Response) => {
-    let bearerToken = "Bearer " + CryptoJS.lib.WordArray.random(512 / 8).toString(CryptoJS.enc.Hex);
-
-    const connection = getConnection("connection1");
-    const authRepository = connection.getRepository(Auth);
-
-    const auth = new Auth();
-    auth.bearer_token = bearerToken;
-    auth.level = AuthLevel.GUEST;
-    await authRepository.save(auth);
-
-    if (auth) {
-        return res.status(201).json({
-            isSuccess: true,
-            auth: {
-                id: auth.id,
-                bearer_token: auth.bearer_token,
-                level: auth.level
-            }
-        });
-    }
-
-    return res.status(201).json({
-        isSuccess: false,
-        auth: {}
-    });
-});
-
 export default router;

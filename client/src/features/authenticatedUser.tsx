@@ -6,6 +6,7 @@ interface AuthenticatedUserState {
     is_authenticated: boolean,
     id: number,
     username: string,
+    email: string,
     profile_picture_url: string,
     bearer_token: string
 }
@@ -21,6 +22,7 @@ const initialState: AuthenticatedUserState = {
     status: '',
     is_authenticated: false,
     id: -1,
+    email: '',
     username: '',
     profile_picture_url: '',
     bearer_token: ''
@@ -84,6 +86,7 @@ export const authenticatedUserSlice = createSlice({
             state.is_authenticated = false;
             state.id = -1;
             state.username = '';
+            state.email = '';
             state.profile_picture_url = '/res/images/default_profile.png';
             state.bearer_token = '';
 
@@ -105,6 +108,7 @@ export const authenticatedUserSlice = createSlice({
                     state.is_authenticated = action.payload.isSuccess;
                     state.id = action.payload.auth.user.id;
                     state.username = action.payload.auth.user.username;
+                    state.email = action.payload.auth.user.email;
                     state.profile_picture_url = action.payload.auth.user.profile_picture;
                     state.bearer_token = action.payload.auth.bearer_token;
                 } else if (action.payload.user) {
@@ -112,6 +116,7 @@ export const authenticatedUserSlice = createSlice({
                     state.is_authenticated = action.payload.isSuccess;
                     state.id = action.payload.user.id;
                     state.username = action.payload.user.username;
+                    state.email = action.payload.user.email;
                     state.profile_picture_url = action.payload.user.profilePicture;
                 } else {
                     state.status = 'Incorrect login details';

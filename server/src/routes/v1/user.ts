@@ -99,7 +99,7 @@ router.put("/:username", async(req: Request, res: Response): Promise<Response> =
 
     let user = await userRepository.findOne({username: req.params.username});
 
-    if (res.locals.user !== undefined) {
+    if (res.locals.user) {
         if ((user) && (res.locals.user.id === user.id)) {
             if (isValidPassword) {
                 const hashArray = hashPassword(password);
