@@ -38,6 +38,23 @@ input {
   margin-bottom: 1rem;
 }
 
+
+div[class="profile"] button {
+  border: 0.15rem solid #3b965b; 
+  background-color: #4ecf7b;
+  color: white;
+  font-size: 16px;
+  margin: auto;
+  height: 2rem;
+  width: 50%;
+  display: block;
+}
+
+div[class="profile"] button:hover {
+  background-color: #3b965b;
+  border: 0.15rem solid #4ecf7b; 
+}
+
 form button {
   border: 0.15rem solid #3b965b; 
   background-color: #4ecf7b;

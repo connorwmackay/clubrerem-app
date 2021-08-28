@@ -16,6 +16,9 @@ import { toggleAccountMenu, selectNavbar, NavbarState } from "./features/navbar"
 
 import './styles/App.css'
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCamera } from '@fortawesome/free-solid-svg-icons'
+
 import Home from './pages/home';
 import Login from './pages/login';
 import User from './pages/user';
@@ -25,6 +28,7 @@ import Settings from './pages/settings';
 // TODO: Create a separate navbar component and call <Navbar /> in App().
 
 function App() {
+    library.add(faCamera);
     
     return (
         <Router>

@@ -7,6 +7,8 @@ import { selectFindUser, setTargetUsername, fetchUser } from '../features/findUs
 
 import '../styles/User.css'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 interface UserParams {
     username: string;
 }
@@ -28,15 +30,34 @@ const User = () => {
     });
 
     if (findUser.isUserFound) {
-        return (
-            <div className="profile">
-                <img src={findUser.user.profile_picture || profile_url} alt="User Profile" width="250" height="250" className="profile_picture" />
-                <h1 className="username">{findUser.user.username}</h1>
-                <p>
+        if (authenticatedUser.id === findUser.user.id) {
+            return (
+                <div className="profile">
+                    <img src={findUser.user.profile_picture || profile_url} alt="User Profile" width="250" height="250" className="profile_picture" />
                     
-                </p>
-            </div>
-        )
+                    <label htmlFor="profilePictureUpload" className="profile_picture_file_label">
+                        <FontAwesomeIcon icon="camera"/>
+                    </label>
+                    <input type="file" name="profilePictureUpload" id="profilePictureUpload"/>
+                    
+                    <h1 className="username">{findUser.user.username}</h1>
+                    <p>
+                        
+                    </p>
+                    <button>Update</button>
+                </div>
+            )
+        } else {
+            return (
+                <div className="profile">
+                    <img src={findUser.user.profile_picture || profile_url} alt="User Profile" width="250" height="250" className="profile_picture" />
+                    <h1 className="username">{findUser.user.username}</h1>
+                    <p>
+                        
+                    </p>
+                </div>
+            )
+        }
     } else {
         return (
             <div className="profile">
