@@ -99,8 +99,8 @@ router.put("/:username", async(req: Request, res: Response): Promise<Response> =
 
     let user = await userRepository.findOne({username: req.params.username});
 
-    if (res.locals.user) {
-        if ((user) && (res.locals.user.id === user.id)) {
+    if (res.locals.user && user) {
+        if (res.locals.user.id === user.id) {
             if (isValidPassword) {
                 const hashArray = hashPassword(password);
                 let hash = `${hashArray[0]}|${hashArray[1]}`;
@@ -108,11 +108,20 @@ router.put("/:username", async(req: Request, res: Response): Promise<Response> =
             }
 
             if (isValidUsername) {
-                user.username = username;
+                const usernameCheck = await userRepository.findOne({username: username});
+                debug("Username Check: ", usernameCheck);
+
+                if (!usernameCheck && usernameCheck === undefined) {
+                    user.username = username;
+                }
             }
 
             if (isValidEmail) {
-                user.email = email;
+                const emailCheck = await userRepository.findOne({email: email});
+
+                if (!emailCheck && emailCheck === undefined) {
+                    user.email = email;
+                }
             }
 
             if (profile_picture.length > 0) {
@@ -139,7 +148,6 @@ router.get("/:username", async(req: Request, res: Response): Promise<Response> =
     const userRepository = connection.getRepository(User);
 
     let user = await userRepository.findOne({username: req.params.username});
-    debug("USER: ", user);
 
     if (user) {
         res.status(201);

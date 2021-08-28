@@ -60,10 +60,13 @@ export const fetchAuthenticatedUser = createAsyncThunk(
                 return rejectWithValue({});
             });
         } else  {
+            console.log("Bearer token:", bearer_token);
+
             return fetch(`http://localhost:4001/api/v1/users/${username}`, {
                 method: 'GET',
                 mode: 'cors',
                 headers: {
+                    'Content-Type': 'application/json',
                     'Authorization': bearer_token || ''
                 }
             }).then(response => response.json())
@@ -111,16 +114,19 @@ export const authenticatedUserSlice = createSlice({
                     state.email = action.payload.auth.user.email;
                     state.profile_picture_url = action.payload.auth.user.profile_picture;
                     state.bearer_token = action.payload.auth.bearer_token;
-                } else if (action.payload.user) {
+                } else if (action.payload.user.email) {
                     state.status = 'Logged in...';
                     state.is_authenticated = action.payload.isSuccess;
                     state.id = action.payload.user.id;
                     state.username = action.payload.user.username;
                     state.email = action.payload.user.email;
-                    state.profile_picture_url = action.payload.user.profilePicture;
-                } else {
+                    state.profile_picture_url = action.payload.user.profile_picture;
+                } else if (action.payload.auth !== {}){
                     state.status = 'Incorrect login details';
                 }
+            } else {
+                state.is_authenticated = false;
+                state.status = 'Incorrect login details';
             }
         },
         [fetchAuthenticatedUser.rejected.type]: (state, action) => {

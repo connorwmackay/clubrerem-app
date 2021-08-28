@@ -61,7 +61,7 @@ const Login = () => {
     return (
         <div>
             <h1>Login</h1>
-            <form method="GET" autoComplete="off" onSubmit={submitLogin} id="loginForm">
+            <form method="GET" autoComplete="off" id="loginForm">
                 <label htmlFor="username">Username</label>
                 <input type="text" id="username" name="username" onChange={handleUsername} required/>
 
@@ -72,7 +72,7 @@ const Login = () => {
                     <input type="checkbox" id="savePassword" name="savePassword" checked={savePassword} onChange={handleSavePassword} />
                 </div>
 
-                <button type="submit" id="loginButton">Login</button>
+                <button type="submit" id="loginButton" onClick={submitLogin}>Login</button>
                 {authenticatedUser.status}
                 {loginRedirect()}
             </form>
