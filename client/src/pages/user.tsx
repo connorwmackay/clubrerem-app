@@ -41,9 +41,7 @@ const User = () => {
                     <input type="file" name="profilePictureUpload" id="profilePictureUpload"/>
                     
                     <h1 className="username">{findUser.user.username}</h1>
-                    <p>
-                        
-                    </p>
+                    <textarea placeholder={findUser.user.description} className="description" maxLength={255}></textarea>
                     <button>Update</button>
                 </div>
             )
@@ -53,7 +51,7 @@ const User = () => {
                     <img src={findUser.user.profile_picture || profile_url} alt="User Profile" width="250" height="250" className="profile_picture" />
                     <h1 className="username">{findUser.user.username}</h1>
                     <p>
-                        
+                        {findUser.user.description}
                     </p>
                 </div>
             )

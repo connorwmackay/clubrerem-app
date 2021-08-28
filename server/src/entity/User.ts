@@ -9,6 +9,9 @@ export default class User {
     @Column({unique: true})
     username: string;
 
+    @Column({default: 'Clubbing in ReRem'})
+    description: string;
+
     @Column({unique: true})
     email: string;
 

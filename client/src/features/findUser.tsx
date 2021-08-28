@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 interface User {
     id: number,
     username: string,
+    description: string,
     profile_picture: string
 }
 
@@ -20,6 +21,7 @@ const initialState: FindUserState = {
     user: {
         id: -1,
         username: '',
+        description: '',
         profile_picture: ''
     }
 }
@@ -52,12 +54,15 @@ export const findUserSlice = createSlice({
     },
     extraReducers: {
         [fetchUser.fulfilled.type]: (state, action) => {
+            console.log(action)
+
             state.isUserFound = action.payload.isSuccess;
             
             if (state.isUserFound) {
                 let tmpUser: User = {
                     id: action.payload.user.id,
                     username: action.payload.user.username,
+                    description: action.payload.user.description,
                     profile_picture: 'http://localhost:4001' + action.payload.user.profilePicture
                 }
 

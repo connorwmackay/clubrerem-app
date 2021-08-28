@@ -10,6 +10,7 @@ import {getRepository, getConnection} from "typeorm";
 interface FullUser {
     id: number;
     username: string;
+    description: string;
     email: string;
     profile_picture: string;
     password_hash: string;
@@ -18,6 +19,7 @@ interface FullUser {
 interface SafeUser {
     id: number;
     username: string;
+    description: string;
     profile_picture: string;
 }
 interface UserResponse {
@@ -55,6 +57,7 @@ router.post("/", async(req: Request, res: Response): Promise<Response> => {
             let fullUser: FullUser = {
                 id: user.id,
                 username: user.username,
+                description: user.description,
                 email: user.email,
                 profile_picture: user.profile_picture,
                 password_hash: user.password_hash
@@ -85,11 +88,13 @@ router.put("/:username", async(req: Request, res: Response): Promise<Response> =
 
     const username: string = req.body.username || "";
     const email: string = req.body.email_addr || "";
+    const description: string = req.body.description || "";
     const password: string = req.body.password || "";
     const profile_picture: string = req.body.profile_picture || "";
 
     // Request Body validation
     const isValidUsername: boolean = username.length > 0 && username.length <= 255 && typeof username === "string" && !username.includes(" ");
+    const isValidDescription: boolean = description.length > 0 && description.length <= 512 && typeof description === "string"
     const isValidEmail: boolean = email.length > 0 && email.length <= 255 && typeof email === "string" && email.includes("@");
     const isValidPassword = password.length > 7 && password.length <= 255 && typeof password === "string";
 
@@ -122,6 +127,10 @@ router.put("/:username", async(req: Request, res: Response): Promise<Response> =
                 if (!emailCheck && emailCheck === undefined) {
                     user.email = email;
                 }
+            }
+
+            if (isValidDescription) {
+                user.description = description;
             }
 
             if (profile_picture.length > 0) {
@@ -166,6 +175,7 @@ router.get("/:username", async(req: Request, res: Response): Promise<Response> =
             "user": {
                 id: user.id,
                 username: user.username,
+                description: user.description,
                 profilePicture: user.profile_picture,
             }
         });
