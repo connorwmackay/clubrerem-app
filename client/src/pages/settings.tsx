@@ -31,7 +31,7 @@ const Settings = () => {
     }
 
     return (
-        <form method="PUT">
+        <form method="PUT" autoComplete="off">
             <h1>Settings</h1>
             <label htmlFor="">Username</label>
             <input type="text" placeholder={authenticatedUser.username} name="username" id="username" onChange={handleUsername}/>

@@ -5,13 +5,15 @@ import authenticatedUser from './authenticatedUser'
 import findUser from './findUser'
 import navbar from './navbar'
 import updateUser from './updateUser'
+import signup from './signup'
 
 export const store = configureStore({
   reducer: {
     authenticatedUser: authenticatedUser,
     findUser: findUser,
     updateUser:  updateUser,
-    navbar: navbar
+    navbar: navbar,
+    signup: signup
   },
 })
 

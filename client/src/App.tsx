@@ -24,6 +24,7 @@ import Login from './pages/login';
 import User from './pages/user';
 import Navbar from './components/navbar';
 import Settings from './pages/settings';
+import Signup from './pages/signup';
 
 // TODO: Create a separate navbar component and call <Navbar /> in App().
 
@@ -40,6 +41,9 @@ function App() {
                 </Route>
                 <Route path="/login">
                     <Login />
+                </Route>
+                <Route path="/signup">
+                    <Signup />
                 </Route>
                 <Route path="/user/:username">
                     <User />

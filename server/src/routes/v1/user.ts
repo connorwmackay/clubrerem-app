@@ -34,7 +34,7 @@ router.post("/", async(req: Request, res: Response): Promise<Response> => {
     if (!res.locals.user) {
         // Request Body variables
         const username: string = req.body.username;
-        const email: string = req.body.email_addr;
+        const email: string = req.body.email;
         const password: string = req.body.password;
 
         // Request Body validation
