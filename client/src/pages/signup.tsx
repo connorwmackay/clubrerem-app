@@ -38,8 +38,6 @@ const Signup = () => {
             password: signup.password
         }
 
-        console.log(data);
-
         dispatch(fetchCreateUser(data));
         event.preventDefault();
     }
