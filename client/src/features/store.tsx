@@ -7,6 +7,7 @@ import navbar from './navbar'
 import updateUser from './updateUser'
 import updateProfile from './profileUpdate'
 import signup from './signup'
+import search from './search'
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ export const store = configureStore({
     updateUser: updateUser,
     updateProfile: updateProfile,
     navbar: navbar,
-    signup: signup
+    signup: signup,
+    search: search
   },
 })
 

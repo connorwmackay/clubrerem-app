@@ -9,6 +9,7 @@ import {
 
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { fetchAuthenticatedUser, selectAuthenticatedUser, unauthenticate, UserLoginData } from './features/authenticatedUser';
+import { selectFindUser, fetchUser, resetUserState } from "./features/findUser";
 
 import Cookies from "js-cookie";
 
@@ -59,7 +60,8 @@ function App() {
 const mapDispatchToProps = {
     fetchAuthenticatedUser,
     unauthenticate,
-    toggleAccountMenu
+    toggleAccountMenu,
+    fetchUser,
 }
 
 export default connect(null, mapDispatchToProps)(App)

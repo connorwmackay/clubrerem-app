@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectAuthenticatedUser } from '../features/authenticatedUser';
 import { useParams } from 'react-router';
 
-import { selectFindUser, setTargetUsername, fetchUser } from '../features/findUser';
+import { selectFindUser, setTargetUsername, fetchUser, resetUserState } from '../features/findUser';
 
 import '../styles/User.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { selectUpdateProfile, setDescription, fetchSendPicture, fetchUpdateProfile } from '../features/profileUpdate';
+import userEvent from '@testing-library/user-event';
 
 interface UserParams {
     username: string;
@@ -28,6 +29,13 @@ const User = () => {
     useEffect(() => {
         if (!findUser.isUserFound) {
             dispatch(fetchUser(findUser.targetUsername));
+        } else {
+            console.log("Username:",params.username);
+            console.log("Username:",findUser.user.username);
+            if (params.username !== findUser.user.username) {
+                dispatch(resetUserState());
+                console.log(findUser);
+            }
         }
     });
 

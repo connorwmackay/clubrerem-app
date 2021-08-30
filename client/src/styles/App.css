@@ -110,3 +110,19 @@
     font-size: 18px;
     margin: auto;
 }
+
+.searchResultItemList {
+    list-style-type: none;
+    position: absolute;
+    top: 6%;
+    left: 43%;
+    background-color: #4ecf7b;
+    border: 0.2rem solid #3b965b;
+    border-top: none;
+    z-index: 10;
+    margin: auto;
+}
+
+.searchResultItem {
+
+}

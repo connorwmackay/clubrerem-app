@@ -50,6 +50,17 @@ export const findUserSlice = createSlice({
     reducers: {
         setTargetUsername: (state, action) => {
             state.targetUsername = action.payload || '';
+        },
+        resetUserState: (state) => {
+            state.isUserFound = false;
+            state.targetUsername = '';
+            state.status = 'Loading...';
+            state.user = {
+                id: -1,
+                username: '',
+                description: '',
+                profile_picture: ''
+            }
         }
     },
     extraReducers: {
@@ -77,6 +88,6 @@ export const findUserSlice = createSlice({
 
 export const selectFindUser = (state: any) => state.findUser;
 
-export const {setTargetUsername} = findUserSlice.actions;
+export const {setTargetUsername, resetUserState} = findUserSlice.actions;
 
 export default findUserSlice.reducer;

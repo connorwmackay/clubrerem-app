@@ -2,26 +2,24 @@ import { createAsyncThunk, createSlice, isRejectedWithValue } from '@reduxjs/too
 import Cookies from 'js-cookie'
 import React, { useEffect } from 'react'
 
-interface UserResult {
+export interface UserResult {
     username: string;
     description: string;
     profile_picture: string;
 }
 
-interface SearchResult {
-    user: UserResult | null;
+export interface SearchResult {
+    user: UserResult;
 }
 
 interface SearchState {
     status: string;
-    query: string;
     has_search_ran: boolean;
     searchResults: SearchResult[];
 }
 
 const initialState: SearchState = {
     status: '',
-    query: '',
     has_search_ran: false,
     searchResults: []
 }
@@ -29,6 +27,7 @@ const initialState: SearchState = {
 export const fetchFind = createAsyncThunk(
     'find/requestStatus',
     async(payload: string, {rejectWithValue}) => {
+
         return await fetch(`http://localhost:4001/api/v1/find/${payload}`,
             {
                 method: 'GET',
@@ -40,6 +39,7 @@ export const fetchFind = createAsyncThunk(
             })
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 return data;
             })
             .catch(err => {
@@ -53,27 +53,34 @@ const searchSlice = createSlice({
     name: 'search',
     initialState,
     reducers: {
-        setQuery: (state, action) => {
-            state.query = action.payload || '';
+        resetSearchResults: (state) => {
+            state.searchResults = [];
         }
     },
     extraReducers: {
         [fetchFind.fulfilled.type]: (state, action) => {
-            console.log("Fulfilled Find:", action.payload);
+            console.log("Fulfilled Find:", action);
 
-            if (action.payload.success.is_success) {
-                action.payload.users.forEach((user: UserResult) => {
-                    const searchResult: SearchResult = {user: user};
-                    state.searchResults.push(searchResult);
-                });
+            if (action.payload) {
+                if (action.payload.success.is_success) {
+                    action.payload.users.forEach((user: UserResult) => {
+                        const searchResult: SearchResult = {user: user};
+                        state.searchResults.push(searchResult);
+                    });
 
-                state.has_search_ran = true;
+                    state.has_search_ran = true;
+                }
             }
+        },
+        [fetchFind.pending.type]: (state, action) => {
+            console.log("Pending Find:", action);
+        },
+        [fetchFind.rejected.type]: (state, action) => {
+            console.log("Rejected Find:", action);
         }
     }
 });
 
 export const selectSearch = (state: any) => state.search;
-
-export const {setQuery} = searchSlice.actions;
+export const {resetSearchResults} = searchSlice.actions;
 export default searchSlice.reducer;

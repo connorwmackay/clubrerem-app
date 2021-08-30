@@ -3,6 +3,7 @@ import Express from 'express'
 import User from '../../entity/User'
 import Friend from '../../entity/Friend'
 import {ILike, getRepository, getConnection} from "typeorm";
+import { debug } from 'winston';
 
 const router = Express.Router();
 
@@ -39,7 +40,7 @@ const defaultFindResponse: FindResponse = {
     users: []
 }
 
-router.get('/:query', async(res: Express.Response, req: Express.Request) => {
+router.get('/:query', async(req: Express.Request, res: Express.Response) => {
     const connection = getConnection("connection1");
     const userRepository = connection.getRepository(User);
     const findResponse: FindResponse = defaultFindResponse;
@@ -50,6 +51,8 @@ router.get('/:query', async(res: Express.Response, req: Express.Request) => {
     findResponse.success.is_valid_search_query = isValidQuery;
 
     const users = await userRepository.find({username: ILike(`${query}%`)});
+    console.log("Users:", users);
+
     const sanitisedUsers: SanitisedUser[] = [];
     
     // Remove sensitive information from response.
