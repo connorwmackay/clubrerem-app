@@ -27,11 +27,16 @@
     resize: none;
 }
 
+.profilePictureContainer {
+    position: relative;
+    width: 100%;
+}
+
 .profile_picture_file_label {
     font-size: 21px;
     position: absolute;
-    left: 54.5%;
-    bottom: 56%;
+    left: 80%;
+    top: 80%;
     z-index: 5;
     color: white;
     text-align: center;
@@ -42,6 +47,7 @@
     border: 0.15rem solid #4ecf7b;
     border-radius: 50%;
 }
+
 .profile_picture_file_label svg path{
     color: white;
 }

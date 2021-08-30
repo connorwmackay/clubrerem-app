@@ -79,12 +79,13 @@ const User = () => {
         if (authenticatedUser.id === findUser.user.id) {
             return (
                 <div className="profile">
-                    {profileImage()}
-                    
-                    <label htmlFor="profilePictureUpload" className="profile_picture_file_label">
+                    <div className="profilePictureContainer">
+                        {profileImage()}
+                        <label htmlFor="profilePictureUpload" className="profile_picture_file_label">
                         <FontAwesomeIcon icon="camera"/>
-                    </label>
-                    <input type="file" name="profilePictureUpload" id="profilePictureUpload" onChange={handleProfileFile}/>
+                        </label>
+                        <input type="file" name="profilePictureUpload" id="profilePictureUpload" onChange={handleProfileFile}/>
+                    </div>
                     
                     <h1 className="username">{findUser.user.username}</h1>
                     <textarea placeholder={findUser.user.description} className="description" maxLength={255} 
