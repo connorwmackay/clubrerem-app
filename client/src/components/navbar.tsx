@@ -91,10 +91,9 @@ export default function Navbar() {
             return (
                 <>
                     <li className="navbar-item-right">
-                        
                         <button className="navbar-button" onClick={toggleMenu}>
-                            <img src={`http://localhost:4001${authenticatedUser.profile_picture_url}`} alt="" width="30" height="30"/> {authenticatedUser.username}
-                            </button>
+                            <img src={`http://localhost:4001${authenticatedUser.profile_picture_url}`} alt="" width="30" height="30" className="nav-profile"/> {authenticatedUser.username}
+                        </button>
                     </li>
                     {accountMenu(navbar.isAccountMenuOpen)}
                 </>

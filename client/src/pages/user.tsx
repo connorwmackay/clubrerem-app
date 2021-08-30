@@ -8,6 +8,7 @@ import { selectFindUser, setTargetUsername, fetchUser } from '../features/findUs
 import '../styles/User.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { selectUpdateProfile, setDescription, fetchSendPicture, fetchUpdateProfile } from '../features/profileUpdate';
 
 interface UserParams {
     username: string;
@@ -15,6 +16,7 @@ interface UserParams {
 
 const User = () => {
     const authenticatedUser = useSelector(selectAuthenticatedUser);
+    const updateProfile = useSelector(selectUpdateProfile);
     const findUser = useSelector(selectFindUser);
     const dispatch = useDispatch();
 
@@ -29,20 +31,66 @@ const User = () => {
         }
     });
 
+    const handleDescription = (event: React.FormEvent<HTMLTextAreaElement>) => {
+        dispatch(setDescription(event.currentTarget.value));
+    }
+
+    const handleProfileFile = (event: React.FormEvent<HTMLInputElement>) => {
+        const formData: FormData = new FormData();
+
+        if (event.currentTarget.files) {
+            formData.append('image', event.currentTarget.files[0]);
+        }
+
+        dispatch(fetchSendPicture(formData));
+    }
+
+    const submitUpdateProfile = () => {
+        dispatch(fetchUpdateProfile({description: updateProfile.description, profile_picture: updateProfile.profileUrl}));
+    }
+
+    const profileImage = () => {
+        if (updateProfile.profileUrl) {
+            return (
+                <img src={'http://localhost:4001' + updateProfile.profileUrl} alt="User Profile" width="250" height="250" className="profile_picture" />
+            )
+        } else {
+            return (
+                <img src={findUser.user.profile_picture || profile_url} alt="User Profile" width="250" height="250" className="profile_picture" />
+            )
+        }   
+    }
+
+    const profileUpdateStatus = () => {
+        if (updateProfile.isUpdated) {
+            return (
+                <p>
+                    Updated profile.
+                </p>
+            )
+        } else {
+            return (
+                <></>
+            )
+        }
+    }
+
     if (findUser.isUserFound) {
         if (authenticatedUser.id === findUser.user.id) {
             return (
                 <div className="profile">
-                    <img src={findUser.user.profile_picture || profile_url} alt="User Profile" width="250" height="250" className="profile_picture" />
+                    {profileImage()}
                     
                     <label htmlFor="profilePictureUpload" className="profile_picture_file_label">
                         <FontAwesomeIcon icon="camera"/>
                     </label>
-                    <input type="file" name="profilePictureUpload" id="profilePictureUpload"/>
+                    <input type="file" name="profilePictureUpload" id="profilePictureUpload" onChange={handleProfileFile}/>
                     
                     <h1 className="username">{findUser.user.username}</h1>
-                    <textarea placeholder={findUser.user.description} className="description" maxLength={255}></textarea>
-                    <button>Update</button>
+                    <textarea placeholder={findUser.user.description} className="description" maxLength={255} 
+                    onChange={handleDescription}></textarea>
+                    <button onClick={submitUpdateProfile}>Update</button>
+                    {profileUpdateStatus()}
                 </div>
             )
         } else {

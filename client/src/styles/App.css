@@ -90,6 +90,10 @@
     border: none;
 }
 
+.nav-profile {
+    background-color: white;
+}
+
 .searchBarForm {
     position: absolute;
     width: 30rem;
