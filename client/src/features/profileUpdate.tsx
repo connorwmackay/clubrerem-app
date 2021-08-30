@@ -17,12 +17,13 @@ const initialState: ProfileUpdateState = {
 export const fetchSendPicture = createAsyncThunk(
     'profileUpdate/sendPictureRequest',
     async(payload: FormData, {dispatch, rejectWithValue}) => {
+
         return await fetch('http://localhost:4001/api/v1/pictures',
             {
                 method: 'POST',
                 mode: 'cors',
                 headers: {
-                    'Authorization': Cookies.get('bearer_token') || ''
+                    'Authorization': Cookies.get('bearer_token') || '',
                 },
                 body: payload
             })
@@ -74,6 +75,8 @@ export const updateProfileSlice = createSlice({
     extraReducers: {
         // Fetch Send Picture
         [fetchSendPicture.fulfilled.type]: (state, action) => {
+            console.log("Fulfilled Profile:", action);
+
             if (action.payload.isSuccess) {
                 state.profileUrl = action.payload.image.url;
             }
