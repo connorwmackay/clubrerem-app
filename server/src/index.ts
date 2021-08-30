@@ -21,6 +21,7 @@ import v1UserRouter from "./routes/v1/user";
 import v1AuthRouter from "./routes/v1/auth";
 import v1PictureRouter from "./routes/v1/picture";
 import v1FriendRouter from "./routes/v1/friend";
+import v1FindRouter from "./routes/v1/find";
 
 const app: Application = express();
 
@@ -88,6 +89,7 @@ v1Router.use("/users", v1UserRouter);
 v1Router.use("/auth", v1AuthRouter);
 v1Router.use("/pictures", v1PictureRouter);
 v1Router.use("/friends", v1FriendRouter);
+v1Router.use("/find", v1FindRouter);
 
 app.use('/api/v1', v1Router);
 
