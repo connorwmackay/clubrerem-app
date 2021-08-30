@@ -115,14 +115,11 @@
     list-style-type: none;
     position: absolute;
     top: 6%;
-    left: 43%;
+    left: 41.5%;
     background-color: #4ecf7b;
     border: 0.2rem solid #3b965b;
     border-top: none;
     z-index: 10;
-    margin: auto;
-}
-
-.searchResultItem {
-
+    padding-left: 5rem;
+    padding-right: 5rem;
 }
