@@ -39,7 +39,6 @@ export const fetchFind = createAsyncThunk(
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 return data;
             })
             .catch(err => {
