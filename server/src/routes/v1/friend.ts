@@ -26,7 +26,7 @@ function getFriendResponse(friend: Friend): {} {
     }
 }
 
-//TODO: Support removing friends.
+// TODO: Support removing friends.
 
 // Send a Friend Request and create a new friend record.
 router.post('/', async(req: Request, res: Response): Promise<Response> => {
@@ -70,7 +70,7 @@ router.post('/', async(req: Request, res: Response): Promise<Response> => {
 });
 
 // Accept a friend request and update the friend record.
-router.put('/:username/accept', async(req: Request, res: Response): Promise<Response> => {
+router.get('/:username/accept', async(req: Request, res: Response): Promise<Response> => {
     const senderUsername = req.params.username;
     
     const connection = getConnection('connection1');
@@ -101,7 +101,7 @@ router.put('/:username/accept', async(req: Request, res: Response): Promise<Resp
 });
 
 // Decline a friend request and update the friend record.
-router.put('/:username/decline', async(req: Request, res: Response): Promise<Response> => {
+router.get('/:username/decline', async(req: Request, res: Response): Promise<Response> => {
     const senderUsername = req.params.username;
     
     const connection = getConnection('connection1');
@@ -174,7 +174,7 @@ router.get('/', async(req: Request, res: Response): Promise<Response> => {
 // Get a Friend record of a specific user connected to the authenticated user.
 router.get('/:username', async(req: Request, res: Response): Promise<Response> => {
 
-    const username = req.params.username;
+    const username = req.params.username || '';
 
     const connection = getConnection('connection1');
     const userRepository = connection.getRepository(User);
@@ -192,11 +192,18 @@ router.get('/:username', async(req: Request, res: Response): Promise<Response> =
         if (friend) {
             return res.status(201).json({
                 isSuccess: true,
-                
+                friend: getFriendResponse(friend)
+            });
+        } else {
+            return res.status(201).json({
+                isSuccess: true,
+                friend: {
+                    friend_status: FriendStatus.NOT_FRIENDS,
+                    friend_request_status: FriendRequestStatus.DECLINED
+                }
             });
         }
     }
-
     return res.status(201).json({
         isSuccess: false,
         friend: {}

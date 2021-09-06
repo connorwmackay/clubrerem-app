@@ -3,7 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectAuthenticatedUser } from '../features/authenticatedUser';
 import { useParams } from 'react-router';
 
-import { selectFindUser, setTargetUsername, fetchUser, resetUserState } from '../features/findUser';
+import {
+    selectFindUser,
+    setTargetUsername,
+    fetchUser,
+    resetUserState,
+    findUserSlice,
+    fetchFriendStatus, fetchAddFriend, fetchAcceptFriend
+} from '../features/findUser';
 
 import '../styles/User.css'
 
@@ -30,11 +37,8 @@ const User = () => {
         if (!findUser.isUserFound) {
             dispatch(fetchUser(findUser.targetUsername));
         } else {
-            console.log("Username:",params.username);
-            console.log("Username:",findUser.user.username);
             if (params.username !== findUser.user.username) {
                 dispatch(resetUserState());
-                console.log(findUser);
             }
         }
     });
@@ -57,7 +61,9 @@ const User = () => {
         dispatch(fetchUpdateProfile({description: updateProfile.description, profile_picture: updateProfile.profileUrl}));
     }
 
-    const profileImage = () => {
+    // Components
+
+    const profileImageComponent = () => {
         if (updateProfile.profileUrl) {
             return (
                 <img src={'http://localhost:4001' + updateProfile.profileUrl} alt="User Profile" width="250" height="250" className="profile_picture" />
@@ -69,7 +75,7 @@ const User = () => {
         }   
     }
 
-    const profileUpdateStatus = () => {
+    const profileUpdateStatusComponent = () => {
         if (updateProfile.isUpdated) {
             return (
                 <p>
@@ -83,35 +89,68 @@ const User = () => {
         }
     }
 
+    const friendComponent = () => {
+        dispatch(fetchFriendStatus(params.username));
+
+        if (findUser.friend.is_friend === 1) {
+            return (
+                <button>Remove Friend</button>
+            )
+        } else if (findUser.friend.is_requested === 0) {
+            if (findUser.friend.senderUsername !== authenticatedUser.username) {
+                return (
+                    <button onClick={() => dispatch(fetchAcceptFriend(params.username))}>Accept</button>
+                );
+            } else {
+                return (
+                    <button disabled>Requested</button>
+                );
+            }
+
+        } else {
+            return (
+                <button onClick={() => dispatch(fetchAddFriend(params.username))}>Add Friend</button>
+            );
+        }
+    }
+
     if (findUser.isUserFound) {
         if (authenticatedUser.id === findUser.user.id) {
             return (
                 <div className="profile">
                     <div className="profilePictureContainer">
-                        {profileImage()}
+                        {profileImageComponent()}
                         <label htmlFor="profilePictureUpload" className="profile_picture_file_label">
-                        <FontAwesomeIcon icon="camera"/>
+                            <FontAwesomeIcon icon="camera"/>
                         </label>
-                        <input type="file" name="profilePictureUpload" id="profilePictureUpload" onChange={handleProfileFile}/>
+                        <input type="file" name="profilePictureUpload" id="profilePictureUpload"
+                               onChange={handleProfileFile}/>
                     </div>
-                    
-                    <h1 className="username">{findUser.user.username}</h1>
-                    <textarea placeholder={findUser.user.description} className="description" maxLength={255} 
-                    onChange={handleDescription}></textarea>
-                    <button onClick={submitUpdateProfile}>Update</button>
-                    {profileUpdateStatus()}
+
+                    <div>
+                        <h1 className="username">{findUser.user.username}</h1>
+                        <textarea placeholder={findUser.user.description} className="description" maxLength={255}
+                                  onChange={handleDescription}></textarea>
+                        <button onClick={submitUpdateProfile}>Update</button>
+                    </div>
+
+                    {profileUpdateStatusComponent()}
                 </div>
             )
         } else {
             return (
                 <div className="profile">
-                    <img src={findUser.user.profile_picture || profile_url} alt="User Profile" width="250" height="250" className="profile_picture" />
-                    <h1 className="username">{findUser.user.username}</h1>
-                    <p>
-                        {findUser.user.description}
-                    </p>
+                    <img src={findUser.user.profile_picture || profile_url} alt="User Profile" width="250" height="250"
+                         className="profile_picture"/>
+                    <div>
+                        <h1 className="username">{findUser.user.username}</h1>
+                        <p>
+                            {findUser.user.description}
+                        </p>
+                    </div>
+                    {friendComponent()}
                 </div>
-            )
+            );
         }
     } else {
         return (

@@ -2,14 +2,14 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import User from './User';
 
 export enum FriendRequestStatus {
-    ACCEPTED,
-    REQUESTED,
+    ACCEPTED=1,
+    REQUESTED=0,
     DECLINED,
 };
 
 export enum FriendStatus {
-    FRIENDS,
-    NOT_FRIENDS,
+    FRIENDS=1,
+    NOT_FRIENDS=2,
 };
 
 @Entity()
