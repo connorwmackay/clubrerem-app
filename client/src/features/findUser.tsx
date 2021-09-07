@@ -44,7 +44,7 @@ export const fetchAddFriend = createAsyncThunk(
     'findUser/addFriend',
     async(payload: string, {rejectWithValue}) => {
         return await fetch(`http://localhost:4001/api/v1/friends/`, {
-            method: 'GET',
+            method: 'POST',
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,13 +1,31 @@
 .friendList {
-    display: flex;
+    position: absolute;
+    left: 40%;
     list-style-type: none;
     margin: 0;
     padding: 0;
-    width: 100%;
+    width: 200rem;
+    margin: auto;
 }
 
 .friendListItem {
+    display: block;
+    margin-bottom: 1rem;
     font-size: 20px;
     width: 100%;
-    text-align: center;
+}
+
+.friendListButton {
+    background-color: #4ecf7b;
+    border: 1px solid #3b965b;
+    color: white;
+    font-size: 14px;
+    height: 1.6rem;
+    height: 1.7rem;
+    border-radius: 0.4rem;
+}
+
+.friendListButton:hover {
+    background-color: #3b965b;
+    border: 1px solid #4ecf7b;
 }

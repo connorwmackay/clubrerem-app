@@ -7,8 +7,8 @@ export interface Friend {
     username: string;
     id: number;
     profile_picture: string;
-    is_friend: boolean;
-    is_requested: boolean;
+    is_friend: number;
+    is_requested: number;
     is_sender: boolean;
 }
 

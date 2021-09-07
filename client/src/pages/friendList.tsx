@@ -29,22 +29,44 @@ const FriendList = () => {
     });
 
     const friendListElements = friendList.friends.map((friend: Friend) => {
-        return <li key={friend.id} className="friendListItem">
-            <Link to={`/user/${friend.username}`}>
-                <img src={`http://localhost:4001${friend.profile_picture}`} alt="Profile" width="35" height="35"/>
-                 {' ' + friend.username}
-            </Link>
-        </li>
+
+        if (friend.is_requested === 0) {
+            return <li key={friend.id} className="friendListItem">
+                <Link to={`/user/${friend.username}`}>
+                    <img src={`http://localhost:4001${friend.profile_picture}`} alt="Profile" width="35" height="35"/>
+                    {' ' + friend.username + ' '}
+                    <button className="friendListButton">Requested</button>
+                </Link>
+            </li>
+        } else if (friend.is_friend === 1){
+            return <li key={friend.id} className="friendListItem">
+                <Link to={`/user/${friend.username}`}>
+                    <img src={`http://localhost:4001${friend.profile_picture}`} alt="Profile" width="35" height="35"/>
+                    {' ' + friend.username + ' '}
+                </Link>
+                <button className="friendListButton">Friends</button>
+            </li>
+        }
     });
 
-    return (
-        <div>
-            <h1>Friend List</h1>
-            <ul className="friendList">
-                {friendListElements}
-            </ul>
-        </div>
-    )
+    if (friendListElements.length <= 0) {
+        return (
+            <div>
+                <h1>Friend List</h1>
+                <p>You should find some friends!</p>
+            </div>
+        )
+    } else {
+        return (
+            <div>
+                <h1>Friend List</h1>
+                <ul className="friendList">
+                    {friendListElements}
+                </ul>
+            </div>
+        )
+    }
+
 }
 
 export default FriendList;
