@@ -26,6 +26,7 @@ import User from './pages/user';
 import Navbar from './components/navbar';
 import Settings from './pages/settings';
 import Signup from './pages/signup';
+import FriendList from './pages/friendList';
 
 // TODO: Create a separate navbar component and call <Navbar /> in App().
 
@@ -51,6 +52,9 @@ function App() {
                 </Route>
                 <Route path="/settings">
                     <Settings />
+                </Route>
+                <Route path="/friends">
+                    <FriendList />
                 </Route>
             </Switch>
         </Router>

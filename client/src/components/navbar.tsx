@@ -57,6 +57,11 @@ export default function Navbar() {
                             </Link>
                         </li>
                         <li className="accountMenuItem">
+                            <Link to={`/friends`}>
+                                <button className="accountMenuButton" onClick={toggleMenu}>Friends</button>
+                            </Link>
+                        </li>
+                        <li className="accountMenuItem">
                             <Link to="/settings">
                                 <button className="accountMenuButton" onClick={toggleMenu}>Settings</button>
                             </Link>

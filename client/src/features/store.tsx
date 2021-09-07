@@ -8,6 +8,7 @@ import updateUser from './updateUser'
 import updateProfile from './profileUpdate'
 import signup from './signup'
 import search from './search'
+import friendList from './friendsList'
 
 export const store = configureStore({
   reducer: {
@@ -17,7 +18,8 @@ export const store = configureStore({
     updateProfile: updateProfile,
     navbar: navbar,
     signup: signup,
-    search: search
+    search: search,
+    friendList: friendList
   },
 })
 
