@@ -7,20 +7,13 @@ import '../styles/Home.css'
 const Home = () => {
     const authenticatedUser = useSelector(selectAuthenticatedUser);
 
-    if (authenticatedUser.is_authenticated) {
-        return (
-            <div>
+    return (
+        <div>
+            <section className="mainBody">
                 <h1>Club ReRem</h1>
-                <p>Hello, {authenticatedUser.username}!</p>
-            </div>
-        )
-    } else {
-        return (
-            <div>
-                <h1>Club ReRem</h1>
-            </div>
-        )
-    }
+            </section>
+        </div>
+    )
 };
 
 

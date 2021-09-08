@@ -30,15 +30,7 @@ const FriendList = () => {
 
     const friendListElements = friendList.friends.map((friend: Friend) => {
 
-        if (friend.is_requested === 0) {
-            return <li key={friend.id} className="friendListItem">
-                <Link to={`/user/${friend.username}`}>
-                    <img src={`http://localhost:4001${friend.profile_picture}`} alt="Profile" width="35" height="35"/>
-                    {' ' + friend.username + ' '}
-                    <button className="friendListButton">Requested</button>
-                </Link>
-            </li>
-        } else if (friend.is_friend === 1){
+    if (friend.is_friend === 1){
             return <li key={friend.id} className="friendListItem">
                 <Link to={`/user/${friend.username}`}>
                     <img src={`http://localhost:4001${friend.profile_picture}`} alt="Profile" width="35" height="35"/>

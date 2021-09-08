@@ -149,9 +149,6 @@ router.get('/', async(req: Request, res: Response): Promise<Response> => {
     }
 
     if (friends) {
-
-        // NOTE: For now all friends are kept in array. Therefore, this loop is commented out.
-        //
         // for (let i=0; i < friends.length; i++) {
         //     if (friends[i].friend_status !== FriendStatus.FRIENDS) {
         //         friends.splice(i, 1);

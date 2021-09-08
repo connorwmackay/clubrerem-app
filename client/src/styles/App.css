@@ -123,3 +123,49 @@
     padding-left: 5rem;
     padding-right: 5rem;
 }
+
+.sidebar {
+    z-index: 5;
+    box-sizing: border-box;
+    position: absolute;
+    top: 4.5rem;
+    right: 1rem;
+    height: 53rem;
+    width: 20rem;
+    padding: 0;
+    margin: 0;
+    background-color: #4ecf7b;
+    border: 1px solid #3b965b;
+    color: white;
+}
+
+.sidebar-card {
+    display: block;
+    width: 100%;
+}
+
+.sidebar-card-title {
+    color: white;
+    text-align: center;
+    margin: auto;
+    margin-top: 2rem;
+}
+
+.sidebar-card-text {
+    color: white;
+    text-align: center;
+    margin: auto;
+}
+
+.sidebar-card-list {
+    list-style-type: none;
+    margin: 0;
+    width: 100%;
+    color: white;
+}
+
+.sidebar-card-list-item {
+    margin-top: .5rem;
+    color: white;
+    font-size: 19px;
+}
