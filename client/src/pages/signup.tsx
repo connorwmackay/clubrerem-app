@@ -57,7 +57,7 @@ const Signup = () => {
     return (
         <div>
             <h1>Signup</h1>
-            <form method="POST" autoComplete="off" onSubmit={submitSignup} id="loginForm">
+            <form method="POST" autoComplete="off" onSubmit={submitSignup} id="loginForm" noValidate>
                 <label htmlFor="username">Username</label>
                 <input type="text" id="username" name="username" onChange={handleUsername} required/>
 

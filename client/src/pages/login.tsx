@@ -32,6 +32,7 @@ const Login = () => {
     }
 
     function submitLogin(event: React.FormEvent) {
+        event.preventDefault();
 
         const loginData: UserLoginData = {
             username: username,
@@ -41,8 +42,6 @@ const Login = () => {
         };
         
         dispatch(fetchAuthenticatedUser(loginData));
-
-        event.preventDefault();
     }
 
     const loginRedirect = () => {
@@ -61,7 +60,7 @@ const Login = () => {
     return (
         <div>
             <h1>Login</h1>
-            <form method="GET" autoComplete="off" id="loginForm">
+            <form autoComplete="off" id="loginForm" noValidate>
                 <label htmlFor="username">Username</label>
                 <input type="text" id="username" name="username" onChange={handleUsername} required/>
 
@@ -76,8 +75,6 @@ const Login = () => {
                 {authenticatedUser.status}
                 {loginRedirect()}
             </form>
-
-            
         </div>
     )
 }

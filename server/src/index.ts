@@ -12,6 +12,7 @@ import { createConnections, Connection, getConnection, getConnectionManager } fr
 import User from "./entity/User";
 import Auth, { AuthLevel } from "./entity/Auth";
 import Friend, { FriendStatus, FriendRequestStatus} from "./entity/Friend";
+import Club, {ClubMember, ClubBulletin, ClubBulletinKeyword} from "./entity/Club";
 
 // Path
 import path from 'path';

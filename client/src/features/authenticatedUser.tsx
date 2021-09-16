@@ -121,7 +121,7 @@ export const authenticatedUserSlice = createSlice({
                     state.username = action.payload.user.username;
                     state.email = action.payload.user.email;
                     state.profile_picture_url = action.payload.user.profile_picture;
-                } else if (action.payload.auth !== {}){
+                } else if (action.payload.auth !== {}) {
                     state.status = 'Incorrect login details';
                 }
             } else {
