@@ -1,4 +1,4 @@
-import { debug } from "console";
+import { debug, profile } from "console";
 import {Request, Response, Router } from "express";
 import {getRepository, getConnection, TreeLevelColumn} from "typeorm";
 
@@ -58,5 +58,70 @@ function getClubBulletinKeywordResponse(bulletinKeyword: ClubBulletinKeyword) {
         bulletin: getClubBulletinResponse(bulletinKeyword.bulletin)
     }
 }
+
+interface ClubBody {
+    name: string,
+    description: string,
+    profile_picture: string,
+    cover_picture: string,
+}
+
+function generateUuid() {
+    const size = 16;
+    let uuid = "";
+
+    for (let i=0; i < size; i++) {
+        const randNum1 = Math.floor(Math.random() * 16);
+        const randNum2 = Math.floor(Math.random() * 16);
+
+        uuid += randNum1.toString(16);
+        uuid += randNum2.toString(16);
+    }
+
+    return uuid;
+}
+
+// Create a club
+router.post('/', async(req: Request, res: Response) => {
+    const connection = getConnection("connection1");
+    const userRepository = connection.getRepository(User);
+    const clubRepository = connection.getRepository(Club);
+
+    if (res.locals.user) {
+        const name = req.body.name;
+        const description = req.body.description;
+        const profile_picture = req.body.profile_picture;
+        const cover_picture = req.body.profile_picture;
+
+        let club = new Club();
+        club.name = name;
+        club.description = description;
+
+        if (profile_picture.length > 0) {
+            club.profile_picture = profile_picture;
+        }
+
+        if (cover_picture.length > 0) {
+            club.cover_picture = cover_picture;
+        }
+
+        club.uuid = generateUuid(); // TODO: Check if uuid has been used.
+        
+        await clubRepository.save(club)
+        .then((club: Club) => {
+            return {
+                isSuccess: true,
+                club: getClubResponse(club)
+            }
+        })
+        .catch(err => {
+            debug(err);
+            return {
+                isSuccess: false,
+                club: {}
+            }
+        });
+    }
+});
 
 export default router;
