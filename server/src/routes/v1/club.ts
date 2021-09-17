@@ -59,13 +59,6 @@ function getClubBulletinKeywordResponse(bulletinKeyword: ClubBulletinKeyword) {
     }
 }
 
-interface ClubBody {
-    name: string,
-    description: string,
-    profile_picture: string,
-    cover_picture: string,
-}
-
 function generateUuid() {
     const size = 16;
     let uuid = "";
@@ -84,7 +77,6 @@ function generateUuid() {
 // Create a club
 router.post('/', async(req: Request, res: Response) => {
     const connection = getConnection("connection1");
-    const userRepository = connection.getRepository(User);
     const clubRepository = connection.getRepository(Club);
 
     if (res.locals.user) {
@@ -109,17 +101,44 @@ router.post('/', async(req: Request, res: Response) => {
         
         await clubRepository.save(club)
         .then((club: Club) => {
-            return {
+            return  res.json({
                 isSuccess: true,
                 club: getClubResponse(club)
-            }
+            });
         })
         .catch(err => {
             debug(err);
-            return {
+            return  res.json({
                 isSuccess: false,
                 club: {}
-            }
+            });
+        });
+    } else {
+        return  res.json({
+            isSuccess: false,
+            club: {}
+        });
+    }
+});
+
+// Get a club
+router.get('/:uuid', async(req: Request, res: Response) => {
+    const connection = getConnection("connection1");
+    const clubRepository = connection.getRepository(Club);
+
+    const uuid = req.params.uuid;
+
+    const club = await clubRepository.findOne({uuid: uuid});
+
+    if (club !== undefined) {
+        return res.json({
+            isSuccess: true,
+            club: getClubResponse(club)
+        });
+    } else {
+        return  res.json({
+            isSuccess: false,
+            club: {}
         });
     }
 });
