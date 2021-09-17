@@ -143,4 +143,59 @@ router.get('/:uuid', async(req: Request, res: Response) => {
     }
 });
 
+router.put('/:uuid', async(req: Request, res: Response) => {
+    const connection = getConnection("connection1");
+    const clubRepository = connection.getRepository(Club);
+
+    if (res.locals.user) {
+        const name = req.body.name;
+        const description = req.body.description;
+        const profile_picture = req.body.profile_picture;
+        const cover_picture = req.body.profile_picture;
+
+        const club = await clubRepository.findOne({uuid: req.params.uuid});
+        
+        if (club !== undefined && club.owner.id === res.locals.user.id) { // TODO: Add OR check for admins
+            if (name.length > 0) {
+                club.name = name;
+            }
+    
+            if (description.length > 0) {
+                club.description = description;
+            }
+    
+            if (profile_picture.length > 0) {
+                club.profile_picture = profile_picture;
+            }
+    
+            if (cover_picture.length > 0) {
+                club.cover_picture = cover_picture;
+            }
+            
+            await clubRepository.save(club)
+            .then((club: Club) => {
+                return  res.json({
+                    isSuccess: true,
+                    club: getClubResponse(club)
+                });
+            })
+            .catch(err => {
+                debug(err);
+                return  res.json({
+                    isSuccess: false,
+                    club: {}
+                });
+            });
+        }
+    }
+
+    return  res.json({
+        isSuccess: false,
+        club: {}
+    });
+});
+
+// TODO: Add Create new member POST Request.
+// TODO: Add Update member PUT Request.
+
 export default router;
