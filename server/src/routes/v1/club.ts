@@ -195,7 +195,145 @@ router.put('/:uuid', async(req: Request, res: Response) => {
     });
 });
 
-// TODO: Add Create new member POST Request.
-// TODO: Add Update member PUT Request.
+router.get('/:uuid/member/:id', async(req: Request, res: Response) => {
+    const connection = getConnection("connection1");
+    const clubMemberRepository = connection.getRepository(ClubMember);
+
+    const member = await clubMemberRepository.findOne({id: Number.apply(req.params.id)});
+
+    if (member) {
+        return res.json({
+            isSuccess: true,
+            member: getClubMemberResponse(member)
+        });
+    }
+
+    return res.json({
+        isSuccess: false,
+        member: {}
+    });
+});
+
+router.get('/:uuid/member/', async(req: Request, res: Response) => {
+    const connection = getConnection("connection1");
+    const clubRepository = connection.getRepository(Club);
+    const clubMemberRepository = connection.getRepository(ClubMember);
+
+    const club = await clubRepository.findOne({uuid: req.params.uuid});
+
+    if (club !== undefined) {
+        const members = await clubMemberRepository.find({club: club});
+        const sanitisedMembers: any = [];
+        
+        members.forEach((member: ClubMember) => {
+            sanitisedMembers.push(getClubMemberResponse(member));
+        });
+
+        return res.json({
+            isSuccess: true,
+            members: sanitisedMembers
+        });
+    }
+
+    return res.json({
+        isSuccess: false,
+        members: []
+    });
+});
+
+router.post('/:uuid/member/', async(req: Request, res: Response) => {
+    const connection = getConnection("connection1");
+    const clubRepository = connection.getRepository(Club);
+    const clubMemberRepository = connection.getRepository(ClubMember);
+
+    const isAdmin = req.body.isAdmin || false;
+    const isMod = req.body.isModerator || false;
+
+    const club = await clubRepository.findOne({uuid: req.params.uuid});
+
+    let isMember: boolean;
+    let isRequested: boolean;
+
+    if (club !== undefined) {
+        if (club.is_public) {
+            isMember = true; // TODO: Check club privacy...
+            isRequested = false;
+        } else {
+            isMember = false;
+            isRequested = true;
+        }
+    
+        const member = new ClubMember();
+
+        member.is_admin = isAdmin;
+        member.is_moderator = isMod;
+        member.is_member = isMember;
+        member.is_requested = isRequested;
+        member.club = club;
+        member.user = res.locals.user;
+
+        await clubMemberRepository.save(member);
+
+        return res.json({
+            isSuccess: true,
+            member: getClubMemberResponse(member)
+        });
+    }
+
+    return res.json({
+        isSuccess: false,
+        member: {}
+    })
+});
+
+router.put('/:uuid/member/:id', async(req: Request, res: Response) => {
+    const connection = getConnection("connection1");
+    const clubRepository = connection.getRepository(Club);
+    const clubMemberRepository = connection.getRepository(ClubMember);
+
+    const club = await clubRepository.findOne({uuid: req.params.uuid});
+
+    if (club !== undefined) {
+        if (res.locals.user.id === club.owner.id) {
+            const isAdmin = req.body.isAdmin;
+            const isModerator = req.body.isModerator;
+            const isMember = req.body.isMember;
+            const isRequested = req.body.isRequested;
+
+            const member = await clubMemberRepository.findOne({id: Number.apply(req.params.id)});
+
+            if (member !== undefined) {
+                if (isAdmin !== undefined || isAdmin !== null) {
+                    member.is_admin = isAdmin;
+                }
+
+                if (isModerator !== undefined || isModerator !== null) {
+                    member.is_moderator = isModerator;
+                }
+
+                if (isMember !== undefined || isMember !== null) {
+                    member.is_member = isMember;
+                }
+
+                if (isRequested !== undefined || isRequested !== null) {
+                    member.is_requested = isRequested;
+                }
+
+                return res.json({
+                    isSuccess: true,
+                    member: getClubMemberResponse(member)
+                });
+            }
+        }
+    }
+
+    return res.json({
+        isSuccess: false,
+        member: {}
+    });
+});
+
+// TODO: Add Club Bulletin REQUESTS.
+// TODO: Find a default Cover image for Clubs.
 
 export default router;
