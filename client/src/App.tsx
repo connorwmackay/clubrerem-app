@@ -27,6 +27,9 @@ import Navbar from './components/navbar';
 import Settings from './pages/settings';
 import Signup from './pages/signup';
 import FriendList from './pages/friendList';
+import Club from './pages/club';
+import CreateClub from './pages/createClub';
+
 import {selectFriendList, setUsername, setUserId, fetchFriendList, Friend} from "./features/friendsList";
 
 // TODO: Create a separate navbar component and call <Navbar /> in App().
@@ -92,7 +95,27 @@ function App() {
         }
     }
 
-    if (!authenticatedUser.is_authenticated) {
+    const clubComponent = () => {
+        return (
+            <div className="sidebar-card">
+                <h2 className="sidebar-card-title">Clubs</h2>
+                <p className="sidebar-card-text">
+                    You haven't joined any clubs. <br /> <br />
+                    <button>
+                        <Link to="/create-club">
+                            Create
+                        </Link>
+                    </button>
+                </p>
+               
+                <ul className="sidebar-card-list">
+
+                </ul>
+            </div>
+        )
+    }
+
+    if (authenticatedUser.is_authenticated) {
         return (
             <Router>
                 <Navbar/>
@@ -116,9 +139,18 @@ function App() {
                     <Route path="/friends">
                         <FriendList/>
                     </Route>
+                    <Route path="/club/:uuid">
+                        <Club />
+                    </Route>
+                    <Route path="/create-club">
+                        <CreateClub />
+                    </Route>
                 </Switch>
 
-
+                <section className="sidebar">
+                    {clubComponent()}
+                    {friendRequestComponent()}
+                </section>
             </Router>
         )
     } else {
@@ -139,17 +171,10 @@ function App() {
                         <Route path="/user/:username">
                             <User/>
                         </Route>
-                        <Route path="/settings">
-                            <Settings/>
-                        </Route>
-                        <Route path="/friends">
-                            <FriendList/>
+                        <Route path="/club/:uuid">
+                            <Club />
                         </Route>
                     </Switch>
-
-                    <section className="sidebar">
-                        {friendRequestComponent()}
-                    </section>
                 </Router>
             )
     }
