@@ -16,7 +16,7 @@ interface FindClubState {
     description: string,
     profile_picture: string,
     cover_picture: string,
-    is_public: string,
+    is_public: boolean,
     owner: User
 }
 
@@ -28,7 +28,7 @@ const initialState: FindClubState = {
     description: '',
     profile_picture: '',
     cover_picture: '',
-    is_public: '',
+    is_public: true,
     owner: {
         id: -1,
         username: '',
@@ -39,6 +39,8 @@ const initialState: FindClubState = {
 export const fetchClub = createAsyncThunk(
     'findClub/fetchClub',
     async(payload: string, {rejectWithValue}) => {
+        console.log("Find Club Payload: ", payload);
+
         return await fetch(`http://localhost:4001/api/v1/club/${payload}`, {
             method: 'GET',
             mode: 'cors',
@@ -49,6 +51,7 @@ export const fetchClub = createAsyncThunk(
         })
         .then(response => response.json())
         .then(data => {
+            console.log("Data: ", data);
             return data;
         })
         .catch(err => {
@@ -70,7 +73,7 @@ export const findClubSlice = createSlice({
             state.description = '';
             state.profile_picture = '';
             state.cover_picture = '';
-            state.is_public = '';
+            state.is_public = false;
             state.owner = {
                 id: -1,
                 username: '',
@@ -90,12 +93,15 @@ export const findClubSlice = createSlice({
                 state.description = action.payload.club.description;
                 state.profile_picture = action.payload.club.profile_picture;
                 state.cover_picture = action.payload.club.cover_picture;
+                state.is_public = action.payload.club.is_public;
+                state.owner = action.payload.club.owner;
             } else {
-                state.is_club_found = false;
+                state.is_club_found = true;
             }
         },
         [fetchClub.pending.type]: (state, action) => {
             console.log("Pending:", action);
+            state.is_club_found = true;
         }
     }
 })

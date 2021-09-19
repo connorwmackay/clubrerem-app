@@ -9,6 +9,8 @@ import Club, { ClubMember, ClubBulletin, ClubBulletinKeyword } from '../../entit
 const router: Router = Router();
 
 function getBaseUserResponse(user: User) {
+    console.log("User...: ", user);
+
     return {
         id: user.id,
         username: user.username,
@@ -24,6 +26,7 @@ function getClubResponse(club: Club) {
         description: club.description,
         profile_picture: club.profile_picture,
         cover_picture: club.cover_picture,
+        is_public: club.is_public,
         owner: getBaseUserResponse(club.owner)
     }
 }
@@ -84,26 +87,30 @@ router.post('/', async(req: Request, res: Response) => {
         const description = req.body.description;
         const profile_picture = req.body.profile_picture;
         const cover_picture = req.body.profile_picture;
+        const is_public = req.body.is_public;
 
         let club = new Club();
         club.name = name;
         club.description = description;
+        club.is_public = is_public || true;
 
-        if (profile_picture.length > 0) {
+        if (profile_picture !== undefined) {
             club.profile_picture = profile_picture;
         }
 
-        if (cover_picture.length > 0) {
+        if (cover_picture !== undefined) {
             club.cover_picture = cover_picture;
         }
 
         club.uuid = generateUuid(); // TODO: Check if uuid has been used.
+
+        club.owner = res.locals.user;
         
         await clubRepository.save(club)
-        .then((club: Club) => {
-            return  res.json({
+        .then((theClub: Club) => {
+            return res.json({
                 isSuccess: true,
-                club: getClubResponse(club)
+                club: getClubResponse(theClub)
             });
         })
         .catch(err => {
@@ -113,12 +120,12 @@ router.post('/', async(req: Request, res: Response) => {
                 club: {}
             });
         });
-    } else {
-        return  res.json({
-            isSuccess: false,
-            club: {}
-        });
     }
+
+    return  res.json({
+        isSuccess: false,
+        club: {}
+    });
 });
 
 // Get a club
@@ -128,7 +135,9 @@ router.get('/:uuid', async(req: Request, res: Response) => {
 
     const uuid = req.params.uuid;
 
-    const club = await clubRepository.findOne({uuid: uuid});
+    const club = await clubRepository.findOne({relations: ["owner"], where: {uuid: uuid}});
+
+    debug("Club: ", club);
 
     if (club !== undefined) {
         return res.json({
