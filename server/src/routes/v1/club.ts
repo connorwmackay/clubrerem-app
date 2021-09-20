@@ -19,6 +19,8 @@ function getBaseUserResponse(user: User) {
 }
 
 function getClubResponse(club: Club) {
+    console.log("Club...", club);
+
     return {
         id: club.id,
         uuid: club.uuid,
@@ -204,16 +206,30 @@ router.put('/:uuid', async(req: Request, res: Response) => {
     });
 });
 
-router.get('/:uuid/member/:id', async(req: Request, res: Response) => {
+router.get('/:uuid/member/:username', async(req: Request, res: Response) => {
     const connection = getConnection("connection1");
+    const userRepository = connection.getRepository(User);
+    const clubRepository = connection.getRepository(Club);
     const clubMemberRepository = connection.getRepository(ClubMember);
 
-    const member = await clubMemberRepository.findOne({id: Number.apply(req.params.id)});
+    const user = await userRepository.findOne({username: req.params.username});
+    const club = await clubRepository.findOne({relations: ["owner"], where: {uuid: req.params.uuid}});
+    const member = await clubMemberRepository.findOne({relations: ["user", "club"], where: {user: user, club: club}});
 
-    if (member) {
+    debug("===Member===", member);
+
+    if (member !== undefined && user !== undefined && club !== undefined) {
         return res.json({
             isSuccess: true,
-            member: getClubMemberResponse(member)
+            member: {
+                id: member.id,
+                user: getBaseUserResponse(user),
+                club: getClubResponse(club),
+                is_admin: member.is_admin,
+                is_moderator: member.is_moderator,
+                is_member: member.is_member,
+                is_requested: member.is_requested
+            }
         });
     }
 
@@ -260,33 +276,37 @@ router.post('/:uuid/member/', async(req: Request, res: Response) => {
 
     const club = await clubRepository.findOne({uuid: req.params.uuid});
 
-    let isMember: boolean;
-    let isRequested: boolean;
+    const memberCheck = await clubMemberRepository.findOne({user: res.locals.user, club: club});
 
-    if (club !== undefined) {
-        if (club.is_public) {
-            isMember = true; // TODO: Check club privacy...
-            isRequested = false;
-        } else {
-            isMember = false;
-            isRequested = true;
+    if (memberCheck === undefined) {
+        let isMember: boolean;
+        let isRequested: boolean;
+
+        if (club !== undefined) {
+            if (club.is_public) {
+                isMember = true; // TODO: Check club privacy...
+                isRequested = false;
+            } else {
+                isMember = false;
+                isRequested = true;
+            }
+        
+            const member = new ClubMember();
+
+            member.is_admin = isAdmin;
+            member.is_moderator = isMod;
+            member.is_member = isMember;
+            member.is_requested = isRequested;
+            member.club = club;
+            member.user = res.locals.user;
+
+            await clubMemberRepository.save(member);
+
+            return res.json({
+                isSuccess: true,
+                member: getClubMemberResponse(member)
+            });
         }
-    
-        const member = new ClubMember();
-
-        member.is_admin = isAdmin;
-        member.is_moderator = isMod;
-        member.is_member = isMember;
-        member.is_requested = isRequested;
-        member.club = club;
-        member.user = res.locals.user;
-
-        await clubMemberRepository.save(member);
-
-        return res.json({
-            isSuccess: true,
-            member: getClubMemberResponse(member)
-        });
     }
 
     return res.json({
