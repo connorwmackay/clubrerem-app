@@ -99,17 +99,29 @@ const Club = () => {
                     break;
             }
 
+            const switchToBulletin = () => {
+                setCurrentMenuItem(ClubNavMenuItem.BULLETIN);
+            }
+
+            const switchToChat = () => {
+                setCurrentMenuItem(ClubNavMenuItem.CHAT);
+            }
+
+            const switchToMembers = () => {
+                setCurrentMenuItem(ClubNavMenuItem.MEMBERS);
+            }
+
             return (
                 <nav className="club-nav">
                     <ul className="club-nav-list">
                         <li className="club-nav-item">
-                            <button className={bulletinClasses}>Bulletin</button>
+                            <button className={bulletinClasses} onClick={switchToBulletin}>Bulletin</button>
                         </li>
                         <li className="club-nav-item">
-                            <button className={chatClasses}>Chat</button>
+                            <button className={chatClasses} onClick={switchToChat}>Chat</button>
                         </li>
                         <li className="club-nav-item">
-                            <button className={membersClasses}>Members</button>
+                            <button className={membersClasses} onClick={switchToMembers}>Members</button>
                         </li>
                     </ul>
                 </nav>
