@@ -7,6 +7,7 @@ import '../styles/User.css'
 import { selectFindClub, fetchClub, resetClubState } from '../features/findClub';
 import { selectJoinClub, fetchJoinClub } from '../features/joinClub';
 import { selectFindClubMember, fetchFindClubMember } from '../features/findClubMember';
+import { selectFindAllClubMembers, fetchAllClubMembers } from '../features/findAllClubMembers';
 
 interface ClubParams {
     uuid: string;
@@ -17,6 +18,8 @@ const Club = () => {
     const findClub = useSelector(selectFindClub);
     const joinClub = useSelector(selectJoinClub);
     const findClubMember = useSelector(selectFindClubMember);
+    const findAllClubMembers = useSelector(selectFindAllClubMembers);
+
     const dispatch = useDispatch();
 
     const params: ClubParams = useParams();
@@ -25,10 +28,14 @@ const Club = () => {
         if (!findClub.is_club_found) {
             dispatch(fetchClub(params.uuid));
         }
+
+        if (!findAllClubMembers.is_data_fetched) {
+            dispatch(fetchAllClubMembers(params.uuid));
+        }
     }, []);
 
     useEffect(() => {
-        if (authenticatedUser.is_authenticated && !findClubMember. is_member_found) {
+        if (authenticatedUser.is_authenticated && !findClubMember.is_member_found) {
             dispatch(fetchFindClubMember({clubUuid: params.uuid, username: authenticatedUser.username}));
         }
     });
@@ -48,6 +55,18 @@ const Club = () => {
             joinClubText = "Request";
         }
 
+        const memberListItems = findAllClubMembers.clubMembers.map((member: any) => {
+            console.log("Member: ", member);
+
+            return <li key={member.id}>
+                <a href={`http://localhost:3000/user/${member.user.username}`}>
+                    <img src={`http://localhost:4001${member.user.profile_picture}`} alt="Profile"
+                    width="25" height="25" />
+                    {member.user.username}
+                </a>
+            </li>
+        });
+
         if (findClub.owner.username === authenticatedUser.username) { // TODO: Add Cover photo
             return (
                 <div>
@@ -57,6 +76,9 @@ const Club = () => {
                         </div>
                         <h1>{findClub.name}</h1>
                         <p>{findClub.description}</p>
+                        <ul>
+                            {memberListItems}
+                        </ul>
                     </section>
                 </div>
             );
@@ -72,6 +94,17 @@ const Club = () => {
                         
                         <h1>{findClub.name}</h1>
                         <p>{findClub.description}</p>
+                        <ul>
+                            <li key={findClub.owner.id}>
+                                <a href={`http://localhost:3000/user/${findClub.owner.username}`}>
+                                    <img src={`http://localhost:4001${findClub.owner.profile_picture}`} alt="Profile"
+                                    width="25" height="25" />
+                                    {findClub.owner.username}
+                                </a>
+                            </li>
+
+                            {memberListItems}
+                        </ul>
                     </section>
                 </div>
             )
@@ -89,6 +122,10 @@ const Club = () => {
                         <form onSubmit={joinClubFunc}>
                             <button type="submit">{joinClubText}</button>
                         </form>
+
+                        <ul>
+                            {memberListItems}
+                        </ul>
                     </section>
                 </div>
             );

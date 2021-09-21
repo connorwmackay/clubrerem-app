@@ -241,18 +241,34 @@ router.get('/:uuid/member/:username', async(req: Request, res: Response) => {
 
 router.get('/:uuid/member/', async(req: Request, res: Response) => {
     const connection = getConnection("connection1");
+    const userRepository = connection.getRepository(User);
     const clubRepository = connection.getRepository(Club);
     const clubMemberRepository = connection.getRepository(ClubMember);
 
     const club = await clubRepository.findOne({uuid: req.params.uuid});
 
     if (club !== undefined) {
-        const members = await clubMemberRepository.find({club: club});
+        const members = await clubMemberRepository.find({relations: ["club", "user"], where: {club: club}});
+        const memberClub = await clubRepository.findOne({relations: ["owner"], where: {uuid: req.params.uuid}});
         const sanitisedMembers: any = [];
         
+        debug("Member List Length: ", members.length);
+
         members.forEach((member: ClubMember) => {
-            sanitisedMembers.push(getClubMemberResponse(member));
+            if (memberClub !== undefined) {
+                sanitisedMembers.push({
+                    id: member.id,
+                    user: getBaseUserResponse(member.user),
+                    club: getClubResponse(memberClub),
+                    is_admin: member.is_admin,
+                    is_moderator: member.is_moderator,
+                    is_member: member.is_member,
+                    is_requested: member.is_requested
+                });
+            }
         });
+
+        debug("====Member List====: ", sanitisedMembers);
 
         return res.json({
             isSuccess: true,
