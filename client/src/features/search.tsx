@@ -8,8 +8,15 @@ export interface UserResult {
     profile_picture: string;
 }
 
+export interface ClubResult {
+    uuid: string,
+    name: string,
+    profile_picture: string
+}
+
 export interface SearchResult {
-    user: UserResult;
+    user: UserResult | null;
+    club: ClubResult | null;
 }
 
 interface SearchState {
@@ -63,7 +70,12 @@ const searchSlice = createSlice({
             if (action.payload) {
                 if (action.payload.success.is_success) {
                     action.payload.users.forEach((user: UserResult) => {
-                        const searchResult: SearchResult = {user: user};
+                        const searchResult: SearchResult = {user: user, club: null};
+                        state.searchResults.push(searchResult);
+                    });
+
+                    action.payload.clubs.forEach((club: ClubResult) => {
+                        const searchResult: SearchResult = {user: null, club: club};
                         state.searchResults.push(searchResult);
                     });
 

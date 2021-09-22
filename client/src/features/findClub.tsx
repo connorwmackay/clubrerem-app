@@ -9,7 +9,8 @@ interface User {
 }
 
 interface FindClubState {
-    is_club_found: boolean;
+    is_club_found: boolean,
+    does_club_exist: boolean,
     id: number,
     uuid: string,
     name: string,
@@ -22,6 +23,7 @@ interface FindClubState {
 
 const initialState: FindClubState = {
     is_club_found: false,
+    does_club_exist: true,
     id: -1,
     uuid: '',
     name: '',
@@ -67,6 +69,7 @@ export const findClubSlice = createSlice({
     reducers: {
         resetClubState: (state) => {
             state.is_club_found = false;
+            state.does_club_exist = true;
             state.id = -1;
             state.uuid = '';
             state.name = '';
@@ -87,6 +90,7 @@ export const findClubSlice = createSlice({
 
             if (action.payload.isSuccess) {
                 state.is_club_found = true;
+                state.does_club_exist = true;
                 state.id = action.payload.club.id;
                 state.uuid = action.payload.club.uuid;
                 state.name = action.payload.club.name;
@@ -97,6 +101,7 @@ export const findClubSlice = createSlice({
                 state.owner = action.payload.club.owner;
             } else {
                 state.is_club_found = true;
+                state.does_club_exist = false;
             }
         },
         [fetchClub.pending.type]: (state, action) => {

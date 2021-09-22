@@ -114,22 +114,37 @@ export default function Navbar() {
 
     const searchResults = () => {
         if (search.searchResults.length > 0) {
-            console.log("Results:", search.searchResults);
 
             let redirect: any = null;
 
             const searchItems: any = [];
             search.searchResults.forEach((result: SearchResult) => {
-                searchItems.push(
-                    <li className="searchResultItem">
-                        <Link to={`/user/${result.user.username}`}>
-                            <button className="navbar-button" onClick={redirectToUser}>
-                                {redirect}
-                                <img src={`http://localhost:4001${result.user.profile_picture}`} width="35" height="35" alt="User profile"/>
-                                {' ' + result.user.username}
-                            </button>
-                        </Link>
-                    </li>);
+
+                if (result.club !== null) {
+                    searchItems.push(
+                        <li className="searchResultItem">
+                            <Link to={`/club/${result.club.uuid}`}>
+                                <button className="navbar-button" onClick={redirectToUser}>
+                                    {redirect}
+                                    <img src={`http://localhost:4001${result.club.profile_picture}`} width="35" height="35" alt="Club profile"/>
+                                    {' ' + result.club.name + ' :: Club'}
+                                </button>
+                            </Link>
+                        </li>);
+                } else if (result.user !== null) {
+                    searchItems.push(
+                        <li className="searchResultItem">
+                            <Link to={`/user/${result.user.username}`}>
+                                <button className="navbar-button" onClick={redirectToUser}>
+                                    {redirect}
+                                    <img src={`http://localhost:4001${result.user.profile_picture}`} width="35" height="35" alt="User profile"/>
+                                    {' ' + result.user.username + ' :: User'}
+                                </button>
+                            </Link>
+                        </li>);
+                }
+
+               
             });
 
             console.log("Search Items:", searchItems);

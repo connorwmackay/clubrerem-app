@@ -44,6 +44,17 @@ const Club = () => {
     }, []);
 
     useEffect(() => {
+        if (params.uuid !== findClub.uuid && findClub.is_club_found && findClub.does_club_exist) {
+            dispatch(resetClubState());
+        }
+
+        if (!findClub.is_club_found && authenticatedUser.is_authenticated) {
+            if (findClub.does_club_exist) {
+                dispatch(fetchClub(params.uuid));
+                dispatch(fetchAllClubMembers(params.uuid));
+            }
+        }
+
         if (authenticatedUser.is_authenticated && !findClubMember.is_member_found) {
             dispatch(fetchFindClubMember({clubUuid: params.uuid, username: authenticatedUser.username}));
         }
@@ -202,7 +213,7 @@ const Club = () => {
                     </section>
                 </div>
             )
-        } else {
+        } else if (findClub.does_club_exist) {
             return (
                 <div>
                     <section className="mainBody">
