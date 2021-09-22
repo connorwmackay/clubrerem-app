@@ -94,7 +94,7 @@ const User = () => {
 
         if (findUser.friend.is_friend === 1) {
             return (
-                <button>Remove Friend</button>
+                <button>Remove</button>
             )
         } else if (findUser.friend.is_requested === 0) {
             if (findUser.friend.senderUsername !== authenticatedUser.username) {

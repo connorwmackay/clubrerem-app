@@ -5,6 +5,8 @@ This social media app aims to have a club-like feel where users become a part of
 should feel, but the aim is to translate the idea of a school / activity centre that houses clubs that each have their
 own club room into digital form.
 
+![Club Screenshot](./screenshots/club.PNG)
+
 ## Libraries
 ### Client
 - React

@@ -23,6 +23,7 @@
 }
 
 .club-nav-button {
+    border-radius: 0;
     background-color: #4ecf7b;
     border: none;
     width: 100%;
@@ -37,6 +38,7 @@
 }
 
 .club-nav-button-current {
+    border-radius: 0;
     background-color: #3b965b;
     border: none;
     width: 100%;
