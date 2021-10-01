@@ -21,9 +21,6 @@ own club room into digital form.
 - ...
 
 ## Build
-**IMPORTANT**: The app is currently broken due to a TypeORM error that prevents the database from connecting to the server. This is a
-critical bug and currently is unsolved. Once the last known safe commit is known a branch will be made from that.
-
 This uses Docker Compose, so you'll need to have it to build this project properly. If you're on windows you'll need WSL2 as well as Docker Desktop. 
 Make sure you clone the repo inside your WSL2 distro filesystem because if you clone it on Windows then Docker will cry. If you are on an OS that isn't 
 annoying you just need Docker Compose.

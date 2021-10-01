@@ -4,7 +4,7 @@ import User from './User';
 export enum FriendRequestStatus {
     ACCEPTED=1,
     REQUESTED=0,
-    DECLINED,
+    DECLINED=2,
 };
 
 export enum FriendStatus {
