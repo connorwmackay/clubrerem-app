@@ -378,7 +378,150 @@ router.put('/:uuid/member/:id', async(req: Request, res: Response) => {
     });
 });
 
-// TODO: Add Club Bulletin REQUESTS.
-// TODO: Find a default Cover image for Clubs.
+router.post(':uuid/bulletin', async(req: Request, res: Response) => {
+    const connection = getConnection("connection1");
+    const clubRepository = connection.getRepository(Club);
+    const clubMemberRepository = connection.getRepository(ClubMember);
+    const clubBulletinRepository = connection.getRepository(ClubBulletin);
+
+    if (res.locals.user) {
+        const club = await clubRepository.findOne({uuid: req.params.uuid})
+        .catch(err => {
+            console.error(err);
+        });
+        
+        if (club !== undefined) {
+            const member = await clubMemberRepository.findOne({user: res.locals.user, club: club})
+            .catch(err => {
+                console.error(err);
+            });
+
+            if (member !== undefined) {
+                const body = req.body;
+                const bulletin = new ClubBulletin();
+
+                bulletin.title = body.title || '';
+                bulletin.content = body.content || '';
+                bulletin.author = member;
+                bulletin.club = club;
+
+                await clubBulletinRepository.save(bulletin);
+
+                return res.status(201).json({
+                    isSuccess: true,
+                    bulletin: getClubBulletinResponse(bulletin)
+                });
+            }
+        }
+    }
+
+    return res.status(201).json({
+        isSuccess: false,
+        bulletin: {}
+    });
+});
+
+router.put(':uuid/bulletin/:id', async(req: Request, res: Response) => {
+    const connection = getConnection("connection1");
+    const clubRepository = connection.getRepository(Club);
+    const clubMemberRepository = connection.getRepository(ClubMember);
+    const clubBulletinRepository = connection.getRepository(ClubBulletin);
+
+    if (res.locals.user) {
+        const club = await clubRepository.findOne({uuid: req.params.uuid})
+        .catch(err => {
+            console.error(err);
+        });
+        
+        if (club !== undefined) {
+            const member = await clubMemberRepository.findOne({user: res.locals.user, club: club})
+            .catch(err => {
+                console.error(err);
+            });
+
+            if (member !== undefined) {
+                const body = req.body;
+                const bulletin = await clubBulletinRepository.findOne({id: Number.parseInt(req.params.id)})
+                .catch(err => {
+                    console.error(err);
+                });
+
+                if (bulletin !== undefined) {
+                    if (body.title !== undefined) {
+                        bulletin.title = body.title;
+                    }
+                    
+                    if (body.content !== undefined) {
+                        bulletin.content = body.content;
+                    }
+
+                    await clubBulletinRepository.save(bulletin);
+
+                    return res.status(201).json({
+                        isSuccess: true,
+                        bulletin: getClubBulletinResponse(bulletin)
+                    });
+                }
+            }
+        }
+    }
+
+    return res.status(201).json({
+        isSuccess: false,
+        bulletin: {}
+    });
+});
+
+router.get(':uuid/bulletin', async(req: Request, res: Response) => {
+    const connection = getConnection("connection1");
+    const clubRepository = connection.getRepository(Club);
+    const clubBulletinRepository = connection.getRepository(ClubBulletin);
+
+    const bulletins = await clubBulletinRepository.find({id: Number.parseInt(req.params.id)})
+    .catch(err => {
+        console.error(err);
+    });
+
+    if (bulletins !== undefined) {
+        const bulletinResp: any = [];
+
+        bulletins.forEach(bulletin => {
+            bulletinResp.push(getClubBulletinResponse(bulletin));
+        });
+
+        return res.status(201).json({
+            isSuccess: true,
+            bulletins: bulletinResp
+        });
+    }
+
+    return res.json({
+        isSuccess: false,
+        bulletins: []
+    });
+});
+
+router.get(':uuid/bulletin/:id', async(req: Request, res: Response) => {
+    const connection = getConnection("connection1");
+    const clubRepository = connection.getRepository(Club);
+    const clubBulletinRepository = connection.getRepository(ClubBulletin);
+
+    const bulletin = await clubBulletinRepository.findOne({id: Number.parseInt(req.params.id)})
+    .catch(err => {
+        console.error(err);
+    });
+
+    if (bulletin !== undefined) {
+        return res.status(201).json({
+            isSuccess: true,
+            bulletin: getClubBulletinResponse(bulletin)
+        });
+    }
+
+    return res.json({
+        isSuccess: false,
+        bulletin: {}
+    });
+});
 
 export default router;
