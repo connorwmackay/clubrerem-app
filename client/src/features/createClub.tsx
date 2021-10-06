@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import {create} from "domain";
 import Cookies from "js-cookie";
 
 export interface CreateClubState {

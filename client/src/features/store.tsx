@@ -14,6 +14,9 @@ import createClub from './createClub'
 import joinClub from './joinClub'
 import findClubMember from './findClubMember'
 import findAllClubMembers from './findAllClubMembers'
+import findClubBulletin from './findClubBulletin'
+import findAllClubBulletins from './findAllClubBulletins'
+import createClubBulletin from './createClubBulletin'
 
 export const store = configureStore({
   reducer: {
@@ -29,7 +32,10 @@ export const store = configureStore({
     createClub: createClub,
     joinClub: joinClub,
     findClubMember: findClubMember,
-    findAllClubMembers: findAllClubMembers
+    findAllClubMembers: findAllClubMembers,
+    findClubBulletin: findClubBulletin,
+    findAllClubBulletins: findAllClubBulletins,
+    createClubBulletin: createClubBulletin
   },
 })
 

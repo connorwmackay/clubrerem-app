@@ -53,7 +53,6 @@ export const fetchAllClubMembers = createAsyncThunk(
         })
         .then(response => response.json())
         .then(data => {
-            console.log("Members List Data:", data)
             return data;
         })
         .catch(err => {

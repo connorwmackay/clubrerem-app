@@ -49,22 +49,6 @@ async function initDb() {
     }],);
 }
 
-
-// Logging
-// app.use(expressWinston.logger({
-//     transports: [
-//         new winston.transports.Console()
-//     ],
-//     format: winston.format.combine(
-//         winston.format.colorize(),
-//         winston.format.json()
-//     ),
-//     meta: true,
-//     msg: "HTTP {{req.method}} {{req.url}}",
-//     expressFormat: true,
-//     colorize: false
-// }));
-
 const authorizeClient = async function (req: Request, res: Response, next: NextFunction) {
     let bearerToken = req.headers['authorization'];
 
