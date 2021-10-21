@@ -40,7 +40,7 @@ export const fetchAuthenticatedUser = createAsyncThunk(
         let bearer_token = Cookies.get('bearer_token');
 
         if ((payload.is_signup)) {
-            return fetch('http://localhost:4001/api/v1/auth', {
+            return await fetch('http://localhost:4001/api/v1/auth', {
                 method: 'POST',
                 mode: 'cors',
                 headers: {
@@ -50,7 +50,8 @@ export const fetchAuthenticatedUser = createAsyncThunk(
             }).then(response => response.json())
             .then(data => {
                 if (payload.save_password) {
-                    Cookies.set('bearer_token', "Bearer " + data.bearer_token, {expires: 7});
+                    console.log("Saving password...");
+                    Cookies.set('bearer_token', `Bearer ${data.jwt_token}`, {expires: 7});
                     Cookies.set('username', payload.username, {expires: 7});
                 }
 
@@ -60,9 +61,7 @@ export const fetchAuthenticatedUser = createAsyncThunk(
                 return rejectWithValue({});
             });
         } else  {
-            console.log("Bearer token:", bearer_token);
-
-            return fetch(`http://localhost:4001/api/v1/users/${username}`, {
+            return await fetch(`http://localhost:4001/api/v1/users/${username}`, {
                 method: 'GET',
                 mode: 'cors',
                 headers: {
@@ -103,7 +102,7 @@ export const authenticatedUserSlice = createSlice({
             state.status = "Logging in...";
         },
         [fetchAuthenticatedUser.fulfilled.type]: (state, action) => {
-            console.log("Fulfilled:", action);
+            console.log("Auth Fulfilled:", action);
 
             if (action.payload.isSuccess === true) {
                 if (action.payload.auth) {
@@ -116,7 +115,7 @@ export const authenticatedUserSlice = createSlice({
                     state.bearer_token = action.payload.jwt_token;
                 } else if (action.payload.user.email) {
                     state.status = 'Logged in...';
-                    state.is_authenticated = action.payload.isSuccess;
+                    state.is_authenticated = true;
                     state.id = action.payload.user.id;
                     state.username = action.payload.user.username;
                     state.email = action.payload.user.email;

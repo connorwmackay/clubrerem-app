@@ -159,7 +159,6 @@ router.get("/:username", async(req: Request, res: Response): Promise<Response> =
     let user = await userRepository.findOne({username: req.params.username});
 
     if (user) {
-        res.status(201);
 
         if (res.locals.user !== undefined) {
             if (res.locals.user.id === user.id) {
@@ -181,7 +180,6 @@ router.get("/:username", async(req: Request, res: Response): Promise<Response> =
         });
     }
 
-    res.status(201);
     return res.json({
         "isSuccess": false,
         "user": {}

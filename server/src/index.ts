@@ -55,26 +55,41 @@ async function initDb() {
 }
 
 const authorizeClient = async function (req: Request, res: Response, next: NextFunction) {
-    const token = req.headers['authorization'];
+    let token = req.headers['authorization'];
+    
     const connection = getConnection("connection1");
     const userRepository = connection.getRepository(User);
 
-    if (token !== undefined) {
-        jwt.verify(token, jwtConfig.secret, (err, decoded) => {
-            if (err !== undefined) {
+    if (token !== undefined && typeof token == 'string') {
+        token = token.split(" ")[1];
+        console.log("Token " + token);
+
+        jwt.verify(token, jwtConfig.secret, async(err, decoded) => {
+            console.log("Verifying...");
+            if (err !== null) {
                 console.error(err);
+                next();
             } else if (decoded !== undefined) {
-                // Find user
-                (async() => {
-                    const user = await userRepository.findOne({id: decoded.id});
+                console.log("Decoded " + JSON.stringify(decoded));
+
+                const user = await userRepository.findOne({id: decoded.data.id}); // FIXME: This becomes undefined sometimes for some reason????
+                console.log("User: " + user);
+
+                if (user !== undefined) {
                     res.locals.user = user;
                     next();
-                });
+                } else {
+                    console.error("No user could be found");
+                    next();
+                }
+            } else {
+                console.log("Doesn't work...");
+                next();
             }
         });
+    } else {
+        next();
     }
-
-    next();
 };
 
 // Static files

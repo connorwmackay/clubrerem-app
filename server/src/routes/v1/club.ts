@@ -106,7 +106,7 @@ router.post('/', async(req: Request, res: Response) => {
 
         club.uuid = generateUuid(); // TODO: Check if uuid has been used.
 
-        club.owner = res.locals.user;
+        club.owner = res.locals.user; // FIXME: User is now just an ID, need to find User and set owner to that....
         
         await clubRepository.save(club)
         .then((theClub: Club) => {
@@ -166,7 +166,7 @@ router.put('/:uuid', async(req: Request, res: Response) => {
 
         const club = await clubRepository.findOne({uuid: req.params.uuid});
         
-        if (club !== undefined && club.owner.id === res.locals.user.id) { // TODO: Add OR check for admins
+        if (club !== undefined && club.owner.id === res.locals.user.id) {
             if (name.length > 0) {
                 club.name = name;
             }
@@ -215,8 +215,6 @@ router.get('/:uuid/member/:username', async(req: Request, res: Response) => {
     const user = await userRepository.findOne({username: req.params.username});
     const club = await clubRepository.findOne({relations: ["owner"], where: {uuid: req.params.uuid}});
     const member = await clubMemberRepository.findOne({relations: ["user", "club"], where: {user: user, club: club}});
-
-    debug("===Member===", member);
 
     if (member !== undefined && user !== undefined && club !== undefined) {
         return res.json({
@@ -267,8 +265,6 @@ router.get('/:uuid/member/', async(req: Request, res: Response) => {
                 });
             }
         });
-
-        debug("====Member List====: ", sanitisedMembers);
 
         return res.json({
             isSuccess: true,
@@ -339,7 +335,7 @@ router.put('/:uuid/member/:id', async(req: Request, res: Response) => {
     const club = await clubRepository.findOne({uuid: req.params.uuid});
 
     if (club !== undefined) {
-        if (res.locals.user.id === club.owner.id) {
+        if (res.locals.user === club.owner.id) {
             const isAdmin = req.body.isAdmin;
             const isModerator = req.body.isModerator;
             const isMember = req.body.isMember;
