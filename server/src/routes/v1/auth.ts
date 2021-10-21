@@ -8,6 +8,9 @@ import Auth, { AuthLevel } from "../../entity/Auth";
 import {getRepository, getConnection} from "typeorm";
 import CryptoJS from "crypto-js";
 
+import jwt from 'jsonwebtoken';
+import jwtConfig from '../../jwt';
+
 router.post("/", async(req: Request, res: Response): Promise<Response> => {
     const connection = getConnection("connection1");
     const userRepository = connection.getRepository(User);
@@ -29,30 +32,22 @@ router.post("/", async(req: Request, res: Response): Promise<Response> => {
             const hash = hashPassword(password, userPasswordHash[1]);
 
             if(userPasswordHash[0].trim() === hash[0].trim()) {
-                let bearerToken = "Bearer " + CryptoJS.lib.WordArray.random(512 / 8).toString(CryptoJS.enc.Hex);
-                
-                const auth = new Auth();
-                auth.user = user;
-                auth.bearer_token = bearerToken;
-                auth.level = AuthLevel.USER;
-                await authRepository.save(auth);
+                const token = jwt.sign({
+                    data: {
+                        id: user.id
+                    }
+                }, jwtConfig.secret, { expiresIn: '7d' });
 
-                if (auth) {
-                    return res.status(201).json({
-                        isSuccess: true,
-                        auth: {
-                            id: auth.id,
-                            bearer_token: auth.bearer_token,
-                            level: auth.level,
-                            user: {
-                                id: auth.user.id,
-                                username: auth.user.username,
-                                profile_picture: auth.user.profile_picture,
-                                email: auth.user.email
-                            }
-                        }
-                    });
-                }
+                return res.status(201).json({
+                    isSuccess: true,
+                    jwt_token: token,
+                    user: {
+                        id: user.id,
+                        username: user.username,
+                        profile_picture: user.profile_picture,
+                        email: user.email
+                    }
+                });
             }
         }
     }

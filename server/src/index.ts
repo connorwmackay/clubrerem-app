@@ -17,6 +17,8 @@ import Club, {ClubMember, ClubBulletin, ClubBulletinKeyword} from "./entity/Club
 // Path
 import path from 'path';
 
+import jwt from 'jsonwebtoken';
+
 // Routes
 import v1UserRouter from "./routes/v1/user";
 import v1AuthRouter from "./routes/v1/auth";
@@ -24,6 +26,9 @@ import v1PictureRouter from "./routes/v1/picture";
 import v1FriendRouter from "./routes/v1/friend";
 import v1FindRouter from "./routes/v1/find";
 import v1ClubRouter from "./routes/v1/club";
+import jwtConfig from "./jwt";
+
+
 
 const app: Application = express();
 
@@ -50,17 +55,25 @@ async function initDb() {
 }
 
 const authorizeClient = async function (req: Request, res: Response, next: NextFunction) {
-    let bearerToken = req.headers['authorization'];
-
+    const token = req.headers['authorization'];
     const connection = getConnection("connection1");
-    const authRepository = connection.getRepository(Auth);
+    const userRepository = connection.getRepository(User);
 
-    let auth = await authRepository.findOne({select: ["id","bearer_token", "level" ], relations: ["user"], where: {bearer_token: bearerToken}});
-
-    if (auth) {
-        res.locals.user = auth.user;
+    if (token !== undefined) {
+        jwt.verify(token, jwtConfig.secret, (err, decoded) => {
+            if (err !== undefined) {
+                console.error(err);
+            } else if (decoded !== undefined) {
+                // Find user
+                (async() => {
+                    const user = await userRepository.findOne({id: decoded.id});
+                    res.locals.user = user;
+                    next();
+                });
+            }
+        });
     }
-    
+
     next();
 };
 

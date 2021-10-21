@@ -50,7 +50,7 @@ export const fetchAuthenticatedUser = createAsyncThunk(
             }).then(response => response.json())
             .then(data => {
                 if (payload.save_password) {
-                    Cookies.set('bearer_token', data.auth.bearer_token, {expires: 7});
+                    Cookies.set('bearer_token', "Bearer " + data.bearer_token, {expires: 7});
                     Cookies.set('username', payload.username, {expires: 7});
                 }
 
@@ -109,11 +109,11 @@ export const authenticatedUserSlice = createSlice({
                 if (action.payload.auth) {
                     state.status = 'Logged in...';
                     state.is_authenticated = action.payload.isSuccess;
-                    state.id = action.payload.auth.user.id;
-                    state.username = action.payload.auth.user.username;
-                    state.email = action.payload.auth.user.email;
-                    state.profile_picture_url = action.payload.auth.user.profile_picture;
-                    state.bearer_token = action.payload.auth.bearer_token;
+                    state.id = action.payload.user.id;
+                    state.username = action.payload.user.username;
+                    state.email = action.payload.user.email;
+                    state.profile_picture_url = action.payload.user.profile_picture;
+                    state.bearer_token = action.payload.jwt_token;
                 } else if (action.payload.user.email) {
                     state.status = 'Logged in...';
                     state.is_authenticated = action.payload.isSuccess;

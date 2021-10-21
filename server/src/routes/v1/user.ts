@@ -75,7 +75,7 @@ router.post("/", async(req: Request, res: Response): Promise<Response> => {
     res.status(201);
 
     let response: UserResponse = {
-        isSuccess: true,
+        isSuccess: false,
         user: {}
     }
 
@@ -147,7 +147,7 @@ router.put("/:username", async(req: Request, res: Response): Promise<Response> =
     }
 
     return res.status(201).json({
-        isSuccess: true,
+        isSuccess: false,
         user: {}
     });
 });

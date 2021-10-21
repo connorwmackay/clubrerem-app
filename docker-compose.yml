@@ -49,6 +49,19 @@ services:
         GUNICORN_ACCESS_LOGFILE: "/tmp/log.txt"
     ports:
         - "5050:80"
+  api_test:
+    build:
+      context: ./api_test
+      dockerfile: Dockerfile
+    command: npm test
+    volumes:
+      - ./api_test:/usr/src/app/api_test
+    depends_on:
+      - backend
+    ports:
+      - "4002:4002"
 volumes:
   server:
   postgres:
+  api_test:
+  client:
