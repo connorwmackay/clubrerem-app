@@ -31,12 +31,14 @@ import Club from './pages/club';
 import CreateClub from './pages/createClub';
 
 import {selectFriendList, setUsername, setUserId, fetchFriendList, Friend} from "./features/friendsList";
+import {selectClubList, fetchClubList} from "./features/ClubList";
 
 // TODO: Create a separate navbar component and call <Navbar /> in App().
 
 function App() {
     const authenticatedUser = useSelector(selectAuthenticatedUser);
     const friendList = useSelector(selectFriendList);
+    const clubList = useSelector(selectClubList);
     const dispatch = useDispatch();
 
     library.add(faCamera);
@@ -96,23 +98,71 @@ function App() {
     }
 
     const clubComponent = () => {
-        return (
-            <div className="sidebar-card">
+        if (!clubList.is_data_fetched) {
+            const user = {
+                id: authenticatedUser.id,
+                username: authenticatedUser.username
+            }
+
+            dispatch(fetchClubList(user));
+
+            return (
+                <div className="sidebar-card">
                 <h2 className="sidebar-card-title">Clubs</h2>
                 <p className="sidebar-card-text">
-                    You haven't joined any clubs. <br /> <br />
-                    <button>
-                        <Link to="/create-club">
-                            Create
-                        </Link>
-                    </button>
+                    Loading...
                 </p>
                
                 <ul className="sidebar-card-list">
 
                 </ul>
             </div>
-        )
+            )
+        } else if (clubList.clubs.length > 0) {
+            const clubListList = clubList.clubs.map((club: any) => {
+                    return <li className="sidebar-card-list-item">
+                        <Link to={`/club/${club.uuid}`} className="sidebar-card-list-item">
+                            <img src={`http://localhost:4001${club.profile_picture}`} alt="Profile" width="25" height="25"/>
+                            {' ' + club.name + ' '}
+                        </Link>
+                    </li>
+            });
+
+            return (
+                <div className="sidebar-card">
+                    <h2 className="sidebar-card-title">Clubs</h2>
+                    <ul className="sidebar-card-list">
+                        {clubListList}
+                    </ul>
+                    <p className="sidebar-card-text">
+                        <button>
+                            <Link to="/create-club">
+                                Create
+                            </Link>
+                        </button>
+                    </p>
+                </div>
+            )
+        } else {
+            return (
+                <div className="sidebar-card">
+                    <h2 className="sidebar-card-title">Clubs</h2>
+                    <p className="sidebar-card-text">
+                        You haven't joined any clubs. <br /> <br />
+                        <button>
+                            <Link to="/create-club">
+                                Create
+                            </Link>
+                        </button>
+                    </p>
+                   
+                    <ul className="sidebar-card-list">
+    
+                    </ul>
+                </div>
+            )
+        }
+        
     }
 
     if (authenticatedUser.is_authenticated) {

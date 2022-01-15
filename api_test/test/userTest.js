@@ -1,6 +1,7 @@
 const assert = require('assert');
 
 describe('User Route', () => {
+    let userId = -1;
     describe('POST Endpoint', () => {
         it('should return a JSON response with isSuccess set to true', () => {
             (async() => {
@@ -40,6 +41,7 @@ describe('User Route', () => {
                 })
                 .then(response => response.json())
                 .then(data => {
+                    userId = data.user.id;
                     return data;
                 })
                 .catch(err => {

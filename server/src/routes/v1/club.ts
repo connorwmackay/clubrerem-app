@@ -278,6 +278,66 @@ router.get('/:uuid/member/', async(req: Request, res: Response) => {
     });
 });
 
+/*
+ * Return all Clubs that a User is part of.
+ */
+router.get('/member/:userId', async(req: Request, res: Response) => {
+    const connection = getConnection("connection1");
+    const userRepository = connection.getRepository(User);
+    const clubRepository = connection.getRepository(Club);
+    const clubMemberRepository = connection.getRepository(ClubMember);
+
+    debug("User Id: " + req.params.userId);
+    const user = await userRepository.findOne({id: Number.parseInt(req.params.userId)});
+    const clubOwners = await clubRepository.find({relations: ["owner"], where: {owner: user}});
+
+    if (user !== undefined) {
+        const members = await clubMemberRepository.find({relations: ["user", "club"], where: {user: user}});
+
+        const clubs: any[] = [];
+        
+        members.forEach(member => {
+            const club =  {
+                id: member.club.id,
+                uuid: member.club.uuid,
+                name: member.club.name,
+                description: member.club.description,
+                profile_picture: member.club.profile_picture,
+                cover_picture: member.club.cover_picture,
+                is_public: member.club.is_public,
+            }
+
+            clubs.push(club);
+        });
+
+        clubOwners.forEach(club => {
+            const newClub =  {
+                id: club.id,
+                uuid: club.uuid,
+                name: club.name,
+                description: club.description,
+                profile_picture: club.profile_picture,
+                cover_picture: club.cover_picture,
+                is_public: club.is_public,
+            }
+
+            clubs.push(newClub);
+        });
+
+        debug(clubs);
+
+        return res.json({
+            isSuccess: true,
+            clubs: clubs
+        });
+    }
+
+    return res.json({
+        isSuccess: false,
+        clubs: []
+    });
+});
+
 router.post('/:uuid/member/', async(req: Request, res: Response) => {
     const connection = getConnection("connection1");
     const clubRepository = connection.getRepository(Club);

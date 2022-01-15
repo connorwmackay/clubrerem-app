@@ -28,8 +28,6 @@ import v1FindRouter from "./routes/v1/find";
 import v1ClubRouter from "./routes/v1/club";
 import jwtConfig from "./jwt";
 
-
-
 const app: Application = express();
 
 app.use(cors());
